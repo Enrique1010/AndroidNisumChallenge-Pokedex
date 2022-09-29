@@ -1,5 +1,7 @@
 package com.erapps.pokedexapp.data.api.models
 
+import com.erapps.pokedexapp.data.api.models.pokemon.*
+
 data class Pokemon(
     val abilities: List<Ability>,
     val base_experience: Int,

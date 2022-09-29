@@ -1,4 +1,4 @@
-package com.erapps.pokedexapp.data.api.models
+package com.erapps.pokedexapp.data.api.models.pokemon
 
 data class Gold(
     val back_default: String,

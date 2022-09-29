@@ -1,4 +1,4 @@
-package com.erapps.pokedexapp.data.api.models
+package com.erapps.pokedexapp.data.api.models.pokemon
 
 data class RubySapphire(
     val back_default: String,

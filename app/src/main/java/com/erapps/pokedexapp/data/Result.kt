@@ -1,4 +1,4 @@
-package com.erapps.foodrecipesapp.data
+package com.erapps.pokedexapp.data
 
 import java.io.IOException
 

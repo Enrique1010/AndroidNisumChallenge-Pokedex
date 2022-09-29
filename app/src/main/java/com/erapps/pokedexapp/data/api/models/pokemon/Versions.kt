@@ -1,4 +1,6 @@
-package com.erapps.pokedexapp.data.api.models
+package com.erapps.pokedexapp.data.api.models.pokemon
+
+import com.erapps.pokedexapp.data.api.models.pokemon.*
 
 data class Versions(
     val generation-i: GenerationI,

@@ -1,7 +1,7 @@
 package com.erapps.pokedexapp.data.api.models.pokemon
 
 data class GenerationIv(
-    val diamond-pearl: DiamondPearl,
-    val heartgold-soulsilver: HeartgoldSoulsilver,
+    val diamondPearl: DiamondPearl,
+    val heartgoldSoulsilver: HeartgoldSoulsilver,
     val platinum: Platinum
 )

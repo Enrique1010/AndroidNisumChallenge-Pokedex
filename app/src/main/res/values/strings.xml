@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PokedexApp</string>
+    <string name="welcome_message">Hi, try the search bar.</string>
+    <!--Errors-->
+    <string name="error_server">Error connecting to the server, please try again later.</string>
+    <string name="timeout_error">The connection to the server timed out, please try again.</string>
+    <string name="unknown_error">An unexpected error has occurred, please try again later.</string>
+    <string name="empty_text">No results, please try another search.</string>
 </resources>

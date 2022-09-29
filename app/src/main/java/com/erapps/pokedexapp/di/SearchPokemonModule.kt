@@ -2,6 +2,8 @@ package com.erapps.pokedexapp.di
 
 import com.erapps.pokedexapp.data.source.SearchPokemonRepository
 import com.erapps.pokedexapp.data.source.SearchPokemonRepositoryImp
+import com.erapps.pokedexapp.data.source.local.SearchPokemonLocalDataSource
+import com.erapps.pokedexapp.data.source.local.SearchPokemonLocalDataSourceImp
 import com.erapps.pokedexapp.data.source.remote.SearchPokemonRemoteDataSource
 import com.erapps.pokedexapp.data.source.remote.SearchPokemonRemoteDataSourceImp
 import dagger.Binds
@@ -19,6 +21,12 @@ abstract class SearchPokemonModule {
     abstract fun provideSearchPokemonRemoteDataSource(
         searchPokemonRemoteDataSourceImp: SearchPokemonRemoteDataSourceImp
     ): SearchPokemonRemoteDataSource
+
+    @Singleton
+    @Binds
+    abstract fun provideSearchPokemonLocalDataSource(
+        searchPokemonLocalDataSourceImp: SearchPokemonLocalDataSourceImp
+    ): SearchPokemonLocalDataSource
 
     @Singleton
     @Binds

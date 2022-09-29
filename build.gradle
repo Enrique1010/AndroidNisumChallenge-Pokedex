@@ -1,0 +1,18 @@
+buildscript {
+    ext {
+        compose_version = '1.3.0-beta03'
+        kotlinVersion = '1.7.10'
+        androidGradlePluginVersion = '7.2.0'
+        hiltVersion = '2.43.2'
+    }
+}
+plugins {
+    id('com.android.application') version("$androidGradlePluginVersion") apply(false)
+    id('com.android.library') version("$androidGradlePluginVersion") apply(false)
+    id('org.jetbrains.kotlin.android') version("$kotlinVersion") apply(false)
+    id('com.google.dagger.hilt.android') version("$hiltVersion") apply(false)
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

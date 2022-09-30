@@ -8,4 +8,5 @@ sealed interface UiState {
 
     object Loading : UiState
     object Empty : UiState
+    data class NoNetwork<out T>(val data: T): UiState
 }

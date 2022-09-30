@@ -3,13 +3,14 @@ package com.erapps.pokedexapp.ui.shared
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -38,6 +39,29 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun SnackBarInternet(snackbarHostState: SnackbarHostState) {
+    SnackbarHost(
+        modifier = Modifier.padding(16.dp),
+        hostState = snackbarHostState
+    ) { data ->
+        Snackbar(
+            action = {
+                TextButton(
+                    onClick = { snackbarHostState.currentSnackbarData?.dismiss() },
+                ) {
+                    Text(
+                        text = data.actionLabel.toString(),
+                        color = SnackbarDefaults.primaryActionColor
+                    )
+                }
+            }
+        ) {
+            Text(text = data.message, color = MaterialTheme.colors.onBackground)
+        }
     }
 }
 

@@ -1,6 +1,5 @@
 package com.erapps.pokedexapp.ui.shared
 
-import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +11,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,7 +31,7 @@ fun ScreenWithMessage(
     ) {
         Text(
             text = stringResource(id = message),
-            fontSize = 20.sp,
+            fontSize = dimensionResource(id = R.dimen.common_screen_font_size).value.sp,
             fontWeight = FontWeight.Bold
         )
     }
@@ -50,7 +50,7 @@ fun ScreenWithMessage(
     ) {
         Text(
             text = stringResource(id = message),
-            fontSize = 20.sp,
+            fontSize = dimensionResource(id = R.dimen.common_screen_font_size).value.sp,
             fontWeight = FontWeight.Bold
         )
         OutlinedButton(onClick = onClick) {
@@ -68,11 +68,6 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     ) {
         CircularProgressIndicator()
     }
-}
-
-@Composable
-fun DisplayToast(message: String) {
-    Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
 }
 
 @Composable
@@ -124,11 +119,19 @@ fun ErrorScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         errorMessage?.let {
-            Text(text = it, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = it,
+                fontSize = dimensionResource(id = R.dimen.common_screen_font_size).value.sp,
+                fontWeight = FontWeight.Bold
+            )
             return@Column
         }
         errorStringResource?.let {
-            Text(text = stringResource(id = it), fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = stringResource(id = it),
+                fontSize = dimensionResource(id = R.dimen.common_screen_font_size).value.sp,
+                fontWeight = FontWeight.Bold
+            )
             return@Column
         }
     }

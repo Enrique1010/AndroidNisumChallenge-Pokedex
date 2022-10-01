@@ -51,8 +51,9 @@ class SearchPokemonRepositoryImp @Inject constructor(
                 pokemonEntity?.let {
                     oldestTimestamp = it.lastDateUpdated
                 }
+                //refresh list every 20 minutes or if pokemonList is empty (eg: First time in the app without internet)
                 val needsRefresh =
-                    oldestTimestamp < System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(60)
+                    oldestTimestamp < System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(20)
                             || pokemonEntity?.pokemonList.isNullOrEmpty()
                 needsRefresh
             })

@@ -8,4 +8,7 @@
     <string name="empty_text">No results, please try another search.</string>
     <string name="error_no_internet">No internet Connection.</string>
     <string name="try_again_btn_text">Try Again</string>
+    <string name="cant_see_details_without_internet_text">To see details check your internet connection.</string>
+    <string name="search_textfield_hint">Search...</string>
+    <string name="search_something_wrong">Something went wrong, check your internet connection and try again.</string>
 </resources>

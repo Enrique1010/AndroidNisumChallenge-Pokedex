@@ -16,7 +16,6 @@ class PokemonSearchViewModel @Inject constructor(
     private val repository: SearchPokemonRepository
 ) : ViewModel() {
 
-    //get pokemons
     private val _uiState = mutableStateOf<UiState?>(null)
     val uiState: State<UiState?> = _uiState
 

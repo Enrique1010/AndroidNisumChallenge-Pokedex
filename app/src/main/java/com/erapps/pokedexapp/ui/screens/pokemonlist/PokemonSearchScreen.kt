@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +43,6 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.erapps.pokedexapp.R
 import com.erapps.pokedexapp.data.api.models.ShortPokemon
-import com.erapps.pokedexapp.ui.shared.NetworkState
 import com.erapps.pokedexapp.ui.shared.*
 import com.erapps.pokedexapp.utils.getIdFromUrl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -111,7 +111,7 @@ fun PokemonListScreen(
                             }
                             Toast.makeText(
                                 context,
-                                "To see details check your internet connection.",
+                                context.getString(R.string.cant_see_details_without_internet_text),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -121,11 +121,10 @@ fun PokemonListScreen(
                     LoadingScreen()
                 }
                 else -> {
-                    if(status) {
-                        ScreenWithMessage(message = R.string.welcome_message)
-                    }
-                    ScreenWithMessage(message = R.string.welcome_message) {
-                        viewModel.filterPokemonsByName("")
+                    if (!status) {
+                        ScreenWithMessage(message = R.string.search_something_wrong) {
+                            viewModel.filterPokemonsByName("")
+                        }
                     }
                 }
             }
@@ -191,7 +190,7 @@ fun SearchBar(
         AnimatedVisibility(visible = focused.value) {
             // Back button
             IconButton(
-                modifier = Modifier.padding(4.dp),
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.dimen_4dp)),
                 onClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
@@ -228,7 +227,12 @@ fun CustomTextField(
             .focusRequester(focusRequester),
         value = value.value,
         onValueChange = { value.value = it },
-        placeholder = { Text(text = "Search...", color = MaterialTheme.colors.onBackground) },
+        placeholder = {
+            Text(
+                text = stringResource(id = R.string.search_textfield_hint),
+                color = MaterialTheme.colors.onBackground
+            )
+        },
         singleLine = true,
         trailingIcon = {
             if (focused.value) {
@@ -277,12 +281,12 @@ fun ListOfPokemonsItem(
 
     Card(
         modifier = modifier
-            .padding(4.dp)
+            .padding(dimensionResource(id = R.dimen.dimen_4dp))
             .wrapContentSize(),
-        shape = RoundedCornerShape(4.dp),
-        elevation = 2.dp,
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.dimen_4dp)),
+        elevation = dimensionResource(id = R.dimen.card_elevation),
         border = BorderStroke(
-            1.dp,
+            dimensionResource(id = R.dimen.card_border_stroke),
             brush = Brush.verticalGradient(
                 colors = listOf(
                     MaterialTheme.colors.surface,
@@ -311,12 +315,12 @@ private fun TitleSection(
     Text(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 4.dp),
+            .padding(bottom = dimensionResource(id = R.dimen.dimen_4dp)),
         text = pokemon.name.capitalize(Locale.current),
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colors.onBackground,
         textAlign = TextAlign.Center,
-        fontSize = 24.sp,
+        fontSize = dimensionResource(id = R.dimen.dimen_24dp).value.sp,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis
     )
@@ -333,7 +337,10 @@ private fun ImageSection(
     SubcomposeAsyncImage(
         modifier = modifier
             .fillMaxWidth()
-            .size(92.dp, 124.dp),
+            .size(
+                dimensionResource(id = R.dimen.card_image_width),
+                dimensionResource(id = R.dimen.card_image_height)
+            ),
         model = ImageRequest.Builder(context)
             .data(imageUrl)
             .placeholder(R.drawable.pokemon_face)

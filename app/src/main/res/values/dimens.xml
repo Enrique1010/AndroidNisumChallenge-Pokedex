@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dimen_4dp">4.dp</dimen>
+    <dimen name="card_elevation">2.dp</dimen>
+    <dimen name="card_border_stroke">1.dp</dimen>
+    <dimen name="dimen_24dp">24.dp</dimen>
+    <dimen name="card_image_width">92.dp</dimen>
+    <dimen name="card_image_height">124.dp</dimen>
+    <dimen name="common_screen_font_size">20.dp</dimen>
+</resources>

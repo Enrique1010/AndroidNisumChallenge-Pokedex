@@ -10,11 +10,8 @@ import com.erapps.pokedexapp.data.room.entities.PokemonListEntity
 @Dao
 interface SearchPokemonDao {
 
-    @Query("select cachedPokemons from pokemon_list where id = 0")
-    suspend fun getCachedPokemons(): List<ShortPokemon>
-
-    @Query("select date from pokemon_list where id = 0")
-    suspend fun getTimeMillis(): Long
+    @Query("select * from pokemon_list where id = 0")
+    suspend fun getCachedPokemons(): PokemonListEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPokemons(pokemonListEntity: PokemonListEntity)

@@ -15,7 +15,7 @@ fun MainNavigation() {
 
     NavHost(navController = navController, startDestination = NavItem.PokemonList.baseRoute) {
         composable(NavItem.PokemonList) {
-            PokemonListScreen() {
+            PokemonListScreen {
                 navController.navigate(NavItem.Details.createDetailsRoute(it)) {
                     launchSingleTop = true
                     restoreState = true

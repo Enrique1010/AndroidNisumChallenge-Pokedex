@@ -13,7 +13,6 @@ import javax.inject.Inject
 interface SearchPokemonLocalDataSource {
     suspend fun insertPokemons(pokemonListEntity: PokemonListEntity)
     fun getCachedPokemons(): Flow<List<ShortPokemon>>
-    suspend fun getTimeMillis(): Long
     suspend fun clearPokemons()
 }
 
@@ -27,12 +26,8 @@ class SearchPokemonLocalDataSourceImp @Inject constructor(
         }
 
     override fun getCachedPokemons(): Flow<List<ShortPokemon>> = flow {
-        emit(searchPokemonDao.getCachedPokemons())
+        emit(searchPokemonDao.getCachedPokemons()?.pokemonList ?: emptyList())
     }.flowOn(Dispatchers.IO)
-
-    override suspend fun getTimeMillis(): Long = withContext(Dispatchers.IO) {
-        return@withContext searchPokemonDao.getTimeMillis()
-    }
 
     override suspend fun clearPokemons() = withContext(Dispatchers.IO) {
         searchPokemonDao.clearPokemons()

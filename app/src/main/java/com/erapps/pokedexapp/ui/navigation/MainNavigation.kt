@@ -23,9 +23,9 @@ fun MainNavigation() {
             }
         }
         composable(NavItem.Details) {
-            val pokemonId = it.arguments?.getString("pokemonId").toString()
+            //val pokemonId = it.arguments?.getString("pokemonId").toString()
 
-            DetailsScreen(pokemonId = pokemonId) {
+            DetailsScreen {
                 navController.popBackStack()
             }
         }

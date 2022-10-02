@@ -4,10 +4,9 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -62,19 +61,12 @@ fun PokemonListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val status = getNetworkStatus()
     val context = LocalContext.current
+    val scrollState = rememberLazyGridState()
 
     Scaffold(
         scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
-        snackbarHost = { ShowNetworkStatusSnackBar(snackbarHostState = it) }
-    ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        snackbarHost = { ShowNetworkStatusSnackBar(snackbarHostState = it) },
+        topBar = {
 
             SearchBar(
                 query = text,
@@ -89,6 +81,16 @@ fun PokemonListScreen(
                 },
                 focused = focused
             )
+        }
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             when (uiState) {
                 UiState.Empty -> {
                     ScreenWithMessage(message = R.string.empty_text)
@@ -114,7 +116,8 @@ fun PokemonListScreen(
                                 context.getString(R.string.cant_see_details_without_internet_text),
                                 Toast.LENGTH_SHORT
                             ).show()
-                        }
+                        },
+                        scrollState = scrollState
                     )
                 }
                 is UiState.Loading -> {
@@ -260,9 +263,16 @@ fun CustomTextField(
 }
 
 @Composable
-fun ListOfPokemons(list: List<ShortPokemon>, onCardClick: (String) -> Unit) {
+fun ListOfPokemons(
+    list: List<ShortPokemon>,
+    onCardClick: (String) -> Unit,
+    scrollState: LazyGridState
+) {
 
-    LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        state = scrollState
+    ) {
         items(list) { pokemon ->
             ListOfPokemonsItem(pokemon = pokemon) { onCardClick(pokemon.name) }
         }
@@ -282,7 +292,15 @@ fun ListOfPokemonsItem(
     Card(
         modifier = modifier
             .padding(dimensionResource(id = R.dimen.dimen_4dp))
-            .wrapContentSize(),
+            .wrapContentSize()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        cardMainColor.value,
+                        MaterialTheme.colors.surface
+                    )
+                )
+            ),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.dimen_4dp)),
         elevation = dimensionResource(id = R.dimen.card_elevation),
         border = BorderStroke(
@@ -294,10 +312,18 @@ fun ListOfPokemonsItem(
                 )
             )
         ),
-        onClick = onCardClick,
-        backgroundColor = cardMainColor.value
+        onClick = onCardClick
     ) {
-        Column {
+        Column(
+            modifier = modifier.background(
+                Brush.verticalGradient(
+                    listOf(
+                        cardMainColor.value,
+                        MaterialTheme.colors.surface
+                    )
+                )
+            )
+        ) {
             ImageSection(
                 imageUrl = getPokemonImage(pokemon.url.getIdFromUrl().toInt()),
                 cardMainColor = cardMainColor

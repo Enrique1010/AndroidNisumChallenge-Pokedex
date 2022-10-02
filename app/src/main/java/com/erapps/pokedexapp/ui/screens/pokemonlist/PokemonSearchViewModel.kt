@@ -2,6 +2,7 @@ package com.erapps.pokedexapp.ui.screens.pokemonlist
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.erapps.pokedexapp.data.source.SearchPokemonRepository

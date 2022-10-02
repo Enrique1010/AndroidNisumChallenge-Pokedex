@@ -19,6 +19,8 @@ sealed class NavItem(
     object Details: NavItem("details", listOf(NavArgs.PokemonId)) {
         fun createDetailsRoute(pokemonId: String) = "$baseRoute/$pokemonId"
     }
+    //details navigation
+
 }
 
 enum class NavArgs(

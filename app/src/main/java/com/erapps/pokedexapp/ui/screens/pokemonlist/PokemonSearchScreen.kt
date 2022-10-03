@@ -14,7 +14,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -41,12 +44,11 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.erapps.pokedexapp.R
 import com.erapps.pokedexapp.data.api.models.ShortPokemon
+import com.erapps.pokedexapp.ui.screens.getNetworkStatus
 import com.erapps.pokedexapp.ui.shared.*
 import com.erapps.pokedexapp.utils.getIdFromUrl
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PokemonListScreen(
     viewModel: PokemonSearchViewModel = hiltViewModel(),
@@ -58,14 +60,11 @@ fun PokemonListScreen(
     val isEmptyList = viewModel.isEmptyList.value
     val text = remember { mutableStateOf("") }
     val focused = remember { mutableStateOf(false) }
-    val snackbarHostState = remember { SnackbarHostState() }
     val status = getNetworkStatus()
     val context = LocalContext.current
     val scrollState = rememberLazyGridState()
 
     Scaffold(
-        scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
-        snackbarHost = { ShowNetworkStatusSnackBar(snackbarHostState = it) },
         topBar = {
 
             SearchBar(
@@ -144,39 +143,6 @@ fun PokemonListScreen(
         }
     }
 
-}
-
-@ExperimentalCoroutinesApi
-@Composable
-fun ShowNetworkStatusSnackBar(snackbarHostState: SnackbarHostState) {
-
-    val scope = rememberCoroutineScope()
-
-    if (getNetworkStatus()) {
-        snackbarHostState.currentSnackbarData?.dismiss()
-
-    } else {
-        val message = stringResource(id = R.string.error_no_internet)
-        scope.launch {
-            snackbarHostState.showSnackbar(
-                message = message,
-                actionLabel = "",
-                duration = SnackbarDuration.Indefinite
-            )
-        }
-
-        AnimatedSnackBar(
-            isConnected = true,
-            snackbarHostState = snackbarHostState
-        )
-    }
-}
-
-@OptIn(ExperimentalCoroutinesApi::class)
-@Composable
-fun getNetworkStatus(): Boolean {
-    val connection by connectivityState()
-    return connection === NetworkState.Connected
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

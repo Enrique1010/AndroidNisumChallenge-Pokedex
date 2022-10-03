@@ -31,38 +31,32 @@ sealed class NavItem(
         }
     }
 
-    object Move : NavItem("moves", listOf(NavArgs.MovesUrl)) {
-        fun createRoute(url: String): String {
+    object MoveDetails :
+        NavItem("moveDetails", listOf(NavArgs.MoveDetailsUrl, NavArgs.MoveColorRGB)) {
+        fun createRoute(url: String, colorRGB: Int): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            return "$baseRoute/$url"
-        }
-    }
-
-    object MoveDetails : NavItem("moveDetails", listOf(NavArgs.MoveDetailsUrl)) {
-        fun createRoute(url: String): String {
-            val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            return "$baseRoute/$url"
+            return "$baseRoute/$encodedUrl/$colorRGB"
         }
     }
 
     object SpecieDetails : NavItem("specieDetails", listOf(NavArgs.SpecieUrl)) {
         fun createRoute(url: String): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            return "$baseRoute/$url"
+            return "$baseRoute/$encodedUrl"
         }
     }
 
-    object Encounters : NavItem("encounters", listOf(NavArgs.EncountersUrl)) {
-        fun createRoute(url: String): String {
+    object Encounters : NavItem("encounters", listOf(NavArgs.EncountersUrl, NavArgs.EncountersColorRGB)) {
+        fun createRoute(url: String, colorRGB: Int): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            return "$baseRoute/$url"
+            return "$baseRoute/$encodedUrl/$colorRGB"
         }
     }
 
     object LocationAreas : NavItem("locationAreas", listOf(NavArgs.LocationAreasUrl)) {
         fun createRoute(url: String): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            return "$baseRoute/$url"
+            return "$baseRoute/$encodedUrl"
         }
     }
 }
@@ -72,11 +66,20 @@ enum class NavArgs(
     val navType: NavType<*>
 ) {
     PokemonId("pokemonId", NavType.StringType),
+
+    //abilities
     AbilityUrl("abilityUrl", NavType.StringType),
     AbilityColorRGB("abilityColorRGB", NavType.IntType),
-    MovesUrl("moveUrl", NavType.StringType),
+
+    //moves
     MoveDetailsUrl("moveUrl", NavType.StringType),
+    MoveColorRGB("moveColorRGB", NavType.IntType),
+
+    //specie
     SpecieUrl("specieUrl", NavType.StringType),
+
+    //locations
     EncountersUrl("encountersUrl", NavType.StringType),
+    EncountersColorRGB("encountersColorRGB", NavType.IntType),
     LocationAreasUrl("locationAreasUrl", NavType.StringType),
 }

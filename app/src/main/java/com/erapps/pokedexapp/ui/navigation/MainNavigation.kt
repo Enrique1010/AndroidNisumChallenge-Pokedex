@@ -7,8 +7,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.erapps.pokedexapp.ui.screens.details.DetailsScreen
 import com.erapps.pokedexapp.ui.screens.details.abilities.AbilityDetailsScreen
+import com.erapps.pokedexapp.ui.screens.details.moves.movedetails.MoveDetailsScreen
 import com.erapps.pokedexapp.ui.screens.pokemonlist.PokemonListScreen
 
 @Composable
@@ -21,25 +23,42 @@ fun MainNavigation() {
                 safeNavigate(navController, NavItem.Details.createDetailsRoute(it))
             }
         }
+        detailsGraph(navController)
+    }
+}
+
+private fun NavGraphBuilder.detailsGraph(navController: NavHostController) {
+
+    navigation(startDestination = NavItem.Details.route, route = NavItem.Details.baseRoute) {
         composable(NavItem.Details) {
             DetailsScreen(
                 onAbilityClick = { url, colorRGB ->
                     safeNavigate(navController, NavItem.AbilityDetails.createRoute(url, colorRGB))
-                }
-            ) {
-                navController.popBackStack()
-            }
+                },
+                onMoveClick = { url, colorRGB ->
+                    safeNavigate(navController, NavItem.MoveDetails.createRoute(url, colorRGB))
+                },
+                onEncounterSectionClick = { url, colorRGB ->
+                    safeNavigate(navController, NavItem.Encounters.createRoute(url, colorRGB))
+                },
+                onBackPressed = { navController.popBackStack() }
+            )
         }
         //details calls
         composable(NavItem.AbilityDetails) {
-            AbilityDetailsScreen() {
+            AbilityDetailsScreen {
+                navController.popBackStack()
+            }
+        }
+        composable(NavItem.MoveDetails) {
+            MoveDetailsScreen {
                 navController.popBackStack()
             }
         }
     }
 }
 
-private fun safeNavigate(navController: NavHostController ,route: String) {
+private fun safeNavigate(navController: NavHostController, route: String) {
     navController.navigate(route) {
         launchSingleTop = true
         restoreState = true

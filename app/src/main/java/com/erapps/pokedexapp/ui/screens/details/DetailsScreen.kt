@@ -1,29 +1,29 @@
 package com.erapps.pokedexapp.ui.screens.details
 
+import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.NavigateNext
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
@@ -39,11 +39,9 @@ import com.erapps.pokedexapp.data.api.models.Pokemon
 import com.erapps.pokedexapp.data.api.models.pokemon.Ability
 import com.erapps.pokedexapp.data.api.models.pokemon.Stat
 import com.erapps.pokedexapp.data.api.models.pokemon.Type
-import com.erapps.pokedexapp.ui.screens.pokemonlist.getNetworkStatus
-import com.erapps.pokedexapp.ui.shared.ErrorScreen
-import com.erapps.pokedexapp.ui.shared.LoadingScreen
-import com.erapps.pokedexapp.ui.shared.UiState
-import com.erapps.pokedexapp.ui.shared.getImageDominantColor
+import com.erapps.pokedexapp.ui.screens.details.moves.MovesScreenSection
+import com.erapps.pokedexapp.ui.screens.getNetworkStatus
+import com.erapps.pokedexapp.ui.shared.*
 import com.erapps.pokedexapp.utils.abbrStat
 import com.erapps.pokedexapp.utils.getPokemonStatToColor
 import com.erapps.pokedexapp.utils.getPokemonTypeToColor
@@ -55,11 +53,12 @@ fun DetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailsScreenViewModel = hiltViewModel(),
     onAbilityClick: (String, Int) -> Unit,
+    onEncounterSectionClick: (String, Int) -> Unit,
+    onMoveClick: (String, Int) -> Unit,
     onBackPressed: () -> Unit
 ) {
 
     val uiState = viewModel.uiState.value
-    val status = getNetworkStatus()
 
     Box(
         modifier = modifier
@@ -68,7 +67,8 @@ fun DetailsScreen(
                 Brush.verticalGradient(
                     listOf(
                         MaterialTheme.colors.surface,
-                        viewModel.backGroundColor.value
+                        viewModel.backGroundColor.value,
+                        MaterialTheme.colors.surface
                     )
                 )
             )
@@ -79,6 +79,11 @@ fun DetailsScreen(
             }
             is UiState.Error -> {
                 ErrorScreen(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(10.dp))
+                        .padding(8.dp)
+                        .align(Alignment.TopCenter),
                     errorMessage = uiState.errorMessage,
                     errorStringResource = uiState.errorStringResource
                 )
@@ -87,13 +92,14 @@ fun DetailsScreen(
                 DetailsScreenContent(
                     modifier = modifier
                         .fillMaxSize()
-                        .shadow(1.dp, RoundedCornerShape(4.dp))
                         .clip(RoundedCornerShape(10.dp))
                         .padding(16.dp)
                         .align(Alignment.TopCenter),
                     pokemon = uiState.data as Pokemon,
                     backGroundColor = viewModel.backGroundColor,
-                    onAbilityClick = onAbilityClick
+                    onAbilityClick = onAbilityClick,
+                    onEncounterSectionClick = onEncounterSectionClick,
+                    onMoveClick = onMoveClick
                 )
             }
             else -> {}
@@ -103,65 +109,66 @@ fun DetailsScreen(
 
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun DetailsScreenContent(
     modifier: Modifier = Modifier,
     pokemon: Pokemon,
     onAbilityClick: (String, Int) -> Unit,
+    onEncounterSectionClick: (String, Int) -> Unit,
+    onMoveClick: (String, Int) -> Unit,
     backGroundColor: MutableState<Color>
 ) {
+    val scaffoldState = rememberBottomSheetScaffoldState()
 
-    Box(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colors.surface),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            ImageSection(
-                imageUrl = pokemon.sprites.front_default,
-                backGroundColor = backGroundColor
-            )
-            TitleSection(title = pokemon.name.capitalize(Locale.current))
-            PokemonTypeSection(types = pokemon.types)
-            PokemonDetailDataSection(
-                pokemonWeight = pokemon.weight,
-                pokemonHeight = pokemon.height
-            )
-            PokemonBaseStats(stats = pokemon.stats)
-            AbilitiesSection(
-                abilities = pokemon.abilities,
-                onAbilityClick = onAbilityClick,
-                backGroundColor = backGroundColor
+    BottomSheetScaffold(
+        modifier = modifier,
+        scaffoldState = scaffoldState,
+        sheetContent = {
+            MovesScreenSection(
+                previousBackGroundColor = backGroundColor,
+                moves = pokemon.moves,
+                isExpanded = scaffoldState.bottomSheetState.isExpanded,
+                onMoveClick = onMoveClick
             )
         }
-    }
-}
+    ){
+        Box(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .background(MaterialTheme.colors.surface)
+                .padding(it),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = modifier,
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-@Composable
-private fun BackButtonBar(
-    modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit
-) {
-    Box(
-        modifier = modifier
-            .background(Color.Transparent),
-        contentAlignment = Alignment.TopStart
-    ) {
-        Icon(
-            modifier = modifier
-                .size(32.dp)
-                .offset(8.dp, 8.dp)
-                .clickable { onBackPressed() },
-            imageVector = Icons.Default.ArrowBack,
-            tint = MaterialTheme.colors.onBackground,
-            contentDescription = null
-        )
+                ImageSection(
+                    imageUrl = pokemon.sprites.front_default,
+                    backGroundColor = backGroundColor
+                )
+                TitleSection(title = pokemon.name.capitalize(Locale.current))
+                PokemonTypeSection(types = pokemon.types)
+                PokemonDetailDataSection(
+                    pokemonWeight = pokemon.weight,
+                    pokemonHeight = pokemon.height
+                )
+                PokemonBaseStats(stats = pokemon.stats)
+                AbilitiesSection(
+                    abilities = pokemon.abilities,
+                    onAbilityClick = onAbilityClick,
+                    backGroundColor = backGroundColor
+                )
+                EncountersSection(
+                    encountersUrl = pokemon.location_area_encounters,
+                    backGroundColor = backGroundColor,
+                    onEncounterSectionClick = onEncounterSectionClick
+                )
+            }
+        }
     }
 }
 
@@ -245,7 +252,7 @@ private fun PokemonTypeSection(types: List<Type>) {
 private fun PokemonDetailDataSection(
     pokemonWeight: Int,
     pokemonHeight: Int,
-    sectionHeight: Dp = 40.dp
+    sectionHeight: Dp = dimensionResource(id = R.dimen.dimen_32dp)
 ) {
     val pokemonWeightInKg = remember {
         round(pokemonWeight * 100f) / 1000f
@@ -334,7 +341,7 @@ private fun PokemonStat(
     statValue: Int,
     statMaxValue: Int,
     statColor: Color,
-    height: Dp = 28.dp,
+    height: Dp = dimensionResource(id = R.dimen.dimen_28dp),
     animDuration: Int = 500,
     animDelay: Int = 0
 ) {
@@ -395,7 +402,7 @@ fun AbilitiesSection(
     onAbilityClick: (String, Int) -> Unit,
     backGroundColor: MutableState<Color>
 ) {
-    var expandAbilitiesSection by remember {
+    var expandAbilitiesSection by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -430,22 +437,69 @@ private fun AbilityItem(
     backGroundColor: MutableState<Color>,
     onAbilityClick: (String, Int) -> Unit
 ) {
+    val context = LocalContext.current
+    val status = getNetworkStatus()
+
     Column {
         abilities.forEach { ability ->
             Row(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(8.dp)
-                    .clickable { onAbilityClick(ability.ability.url, backGroundColor.value.toArgb()) }
+                    .clickable {
+                        if (!status) {
+                            Toast
+                                .makeText(
+                                    context,
+                                    R.string.cant_see_details_without_internet_text,
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                            return@clickable
+                        }
+                        onAbilityClick(ability.ability.url, backGroundColor.value.toArgb())
+                    },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.Star,
-                    tint = backGroundColor.value,
-                    contentDescription = null
-                )
-                Spacer(modifier = modifier.width(8.dp))
-                Text(text = ability.ability.name.makeGoodTitle())
+                Row {
+                    Icon(
+                        imageVector = Icons.Rounded.Star,
+                        tint = backGroundColor.value,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = modifier.width(8.dp))
+                    Text(text = ability.ability.name.makeGoodTitle())
+                }
+                Icon(imageVector = Icons.Outlined.NavigateNext, contentDescription = null)
             }
         }
+    }
+}
+
+@Composable
+private fun EncountersSection(
+    modifier: Modifier = Modifier,
+    encountersUrl: String,
+    backGroundColor: MutableState<Color>,
+    onEncounterSectionClick: (String, Int) -> Unit,
+) {
+
+    Spacer(modifier = modifier.height(8.dp))
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onEncounterSectionClick(encountersUrl, backGroundColor.value.toArgb()) },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = "Encounters", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Icon(
+            modifier = modifier.clickable {
+                onEncounterSectionClick(encountersUrl, backGroundColor.value.toArgb())
+            },
+            imageVector = Icons.Default.NavigateNext,
+            contentDescription = null
+        )
     }
 }

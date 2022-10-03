@@ -1,15 +1,17 @@
 package com.erapps.pokedexapp.ui.shared
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -18,6 +20,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.erapps.pokedexapp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+
+@Composable
+fun BackButtonBar(
+    modifier: Modifier = Modifier,
+    onBackPressed: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .background(Color.Transparent),
+        contentAlignment = Alignment.TopStart
+    ) {
+        Icon(
+            modifier = modifier
+                .size(dimensionResource(id = R.dimen.dimen_32dp))
+                .offset(
+                    dimensionResource(id = R.dimen.dimen_8dp),
+                    dimensionResource(id = R.dimen.dimen_8dp)
+                )
+                .clickable { onBackPressed() },
+            imageVector = Icons.Default.ArrowBack,
+            tint = MaterialTheme.colors.onBackground,
+            contentDescription = null
+        )
+    }
+}
 
 @Composable
 fun ScreenWithMessage(

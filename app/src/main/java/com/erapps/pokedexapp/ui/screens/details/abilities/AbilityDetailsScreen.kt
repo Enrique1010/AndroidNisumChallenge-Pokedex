@@ -28,6 +28,7 @@ import com.erapps.pokedexapp.R
 import com.erapps.pokedexapp.data.api.models.abilities.AbilityDetails
 import com.erapps.pokedexapp.data.api.models.abilities.EffectEntryX
 import com.erapps.pokedexapp.data.api.models.abilities.FlavorTextEntry
+import com.erapps.pokedexapp.ui.shared.BackButtonBar
 import com.erapps.pokedexapp.ui.shared.ErrorScreen
 import com.erapps.pokedexapp.ui.shared.LoadingScreen
 import com.erapps.pokedexapp.ui.shared.UiState
@@ -96,31 +97,6 @@ fun AbilityDetailsScreen(
             else -> {}
         }
         BackButtonBar(onBackPressed = onBackPressed)
-    }
-}
-
-@Composable
-private fun BackButtonBar(
-    modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit
-) {
-    Box(
-        modifier = modifier
-            .background(Color.Transparent),
-        contentAlignment = Alignment.TopStart
-    ) {
-        Icon(
-            modifier = modifier
-                .size(dimensionResource(id = R.dimen.dimen_32dp))
-                .offset(
-                    dimensionResource(id = R.dimen.dimen_8dp),
-                    dimensionResource(id = R.dimen.dimen_8dp)
-                )
-                .clickable { onBackPressed() },
-            imageVector = Icons.Default.ArrowBack,
-            tint = MaterialTheme.colors.onBackground,
-            contentDescription = null
-        )
     }
 }
 

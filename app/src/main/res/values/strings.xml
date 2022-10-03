@@ -17,4 +17,6 @@
     <string name="feature_list_per_game_label">"Feature List per Game."</string>
     <string name="feature_table_game_label">Game/s</string>
     <string name="feature_table_feature_label">Feature</string>
+    <string name="go_back_and_try_again">Something went wrong, go back and try again.</string>
+    <string name="moves_label">Teachable Moves</string>
 </resources>

@@ -248,7 +248,7 @@ fun CustomTextField(
                 }
             }
         },
-        shape = CircleShape,
+        shape = RoundedCornerShape(4.dp),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions { onSearchClick() },
         colors = TextFieldDefaults.textFieldColors(

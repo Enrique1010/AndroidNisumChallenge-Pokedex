@@ -9,11 +9,11 @@ val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 
 //pokemon stats colors
-val SpdColor = Color(0xFFF5FF00)
+val SpdColor = Color(1f, 0f, 0.8f, 0.7f)
 val AtkColor = Color(1.0f, 0.133f, 0.0f, 0.659f)
 val DefColor = Color(0.0f, 0.6f, 1.0f, 0.439f)
 val SpAtkColor = Color(0.671f, 0f, 1f, 0.57f)
-val SpDefColor = Color(1f, 0f, 0.8f, 0.7f)
+val SpDefColor = Color(0.224f, 0.624f, 0.675f, 1.0f)
 val HPColor = Color(0f, 1f, 0.063f, 0.55f)
 
 //pokemon types colors

@@ -1,12 +1,14 @@
 package com.erapps.pokedexapp.utils
 
-import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import com.erapps.pokedexapp.data.api.models.pokemon.Stat
-import com.erapps.pokedexapp.data.api.models.pokemon.Type
 import com.erapps.pokedexapp.ui.theme.*
+
+fun String.makeGoodTitle(): String {
+    return this.replace("-", " ").capitalize(Locale.current)
+}
 
 fun String.getIdFromUrl(): String {
     return Regex("[0-9]+").findAll(this)

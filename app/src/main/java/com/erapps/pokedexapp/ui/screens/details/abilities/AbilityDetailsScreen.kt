@@ -1,9 +1,6 @@
 package com.erapps.pokedexapp.ui.screens.details.abilities
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,12 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.erapps.pokedexapp.R
@@ -35,6 +32,10 @@ import com.erapps.pokedexapp.ui.shared.ErrorScreen
 import com.erapps.pokedexapp.ui.shared.LoadingScreen
 import com.erapps.pokedexapp.ui.shared.UiState
 import com.erapps.pokedexapp.utils.makeGoodTitle
+
+const val COLUMN1WEIGHT = .4f
+const val COLUMN2WEIGHT = .6f
+const val FILTERLANGUAGE = "en"
 
 @Composable
 fun AbilityDetailsScreen(
@@ -73,18 +74,18 @@ fun AbilityDetailsScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
+                        .padding(dimensionResource(id = R.dimen.dimen_8dp))
                         .background(MaterialTheme.colors.surface),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = data.name.makeGoodTitle(),
-                        fontSize = 30.sp,
+                        fontSize = dimensionResource(id = R.dimen.ability_details_title).value.sp,
                         fontWeight = FontWeight.Bold,
                         color = previousBackGroundColor
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_16dp)))
                     AbilityDetailsContent(
                         flavorTextEntries = data.flavor_text_entries,
                         effectEntries = data.effect_entries,
@@ -110,8 +111,11 @@ private fun BackButtonBar(
     ) {
         Icon(
             modifier = modifier
-                .size(32.dp)
-                .offset(8.dp, 8.dp)
+                .size(dimensionResource(id = R.dimen.dimen_32dp))
+                .offset(
+                    dimensionResource(id = R.dimen.dimen_8dp),
+                    dimensionResource(id = R.dimen.dimen_8dp)
+                )
                 .clickable { onBackPressed() },
             imageVector = Icons.Default.ArrowBack,
             tint = MaterialTheme.colors.onBackground,
@@ -136,75 +140,103 @@ private fun AbilityDetailsContent(
     }
 
     Column(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier.padding(dimensionResource(id = R.dimen.dimen_8dp)),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
         EffectSection(effect = effects.effect, shortEffect = effects.short_effect)
-        AbilitiesResultsSection(flavorTexts = flavorTexts, color = color)
+        TableScreen(flavorTexts = flavorTexts, color = color)
     }
 }
 
-@Composable
 @OptIn(ExperimentalFoundationApi::class)
-private fun AbilitiesResultsSection(
+@Composable
+fun TableScreen(
     modifier: Modifier = Modifier,
     flavorTexts: List<FlavorTextEntry>,
     color: Color,
 ) {
+
+    val column1Weight = COLUMN1WEIGHT // 40%
+    val column2Weight = COLUMN2WEIGHT // 60%
+    //header
+    Row(Modifier.background(color)) {
+        AnnotatedStringTableCell(
+            text = stringResource(id = R.string.feature_table_game_label),
+            weight = column1Weight,
+            color = MaterialTheme.colors.onBackground
+        )
+        AnnotatedStringTableCell(
+            text = stringResource(id = R.string.feature_table_feature_label),
+            weight = column2Weight,
+            color = MaterialTheme.colors.onBackground
+        )
+    }
+    //table
     CompositionLocalProvider(
         LocalOverscrollConfiguration provides null
     ) {
-        LazyColumn {
-            items(flavorTexts) { flavorText ->
+        LazyColumn(
+            modifier
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.dimen_4dp))
+        ) {
+            items(flavorTexts) { flavorTexts ->
                 Row(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 16.dp),
+                    modifier = modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(modifier = modifier.width(8.dp))
-                    Column(
-                        modifier = modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(
-                            modifier = modifier.fillMaxWidth(),
-                            text = buildAnnotatedString {
-                                append(
-                                    AnnotatedString(
-                                        "Game: ",
-                                        spanStyle = SpanStyle(
-                                            fontWeight = FontWeight.Bold,
-                                            color = color
-                                        )
-                                    )
-                                )
-                                append(
-                                    AnnotatedString(
-                                        flavorText.version_group.name.makeGoodTitle(),
-                                        spanStyle = SpanStyle(fontWeight = FontWeight.Bold)
-                                    )
-                                )
-                            }
-                        )
-                        Text(
-                            text = buildAnnotatedString {
-                                append(
-                                    AnnotatedString(
-                                        "Result: ",
-                                        spanStyle = SpanStyle(fontWeight = FontWeight.Bold)
-                                    )
-                                )
-                                append(flavorText.flavor_text)
-                            }
-                        )
-                    }
+                    AnnotatedStringTableCell(
+                        text = flavorTexts.version_group.name.makeGoodTitle(),
+                        weight = column1Weight,
+                        color = color
+                    )
+                    TableCell(text = flavorTexts.flavor_text, weight = column2Weight)
                 }
             }
         }
     }
+}
+
+@Composable
+fun RowScope.TableCell(
+    text: String,
+    weight: Float,
+) {
+    Text(
+        text = text,
+        modifier = Modifier
+            .border(dimensionResource(id = R.dimen.basic_border), MaterialTheme.colors.surface)
+            .weight(weight)
+            .padding(dimensionResource(id = R.dimen.dimen_8dp)),
+        color = MaterialTheme.colors.onBackground
+    )
+}
+
+@Composable
+fun RowScope.AnnotatedStringTableCell(
+    modifier: Modifier = Modifier,
+    text: String,
+    weight: Float,
+    color: Color
+) {
+    Text(
+        text = buildAnnotatedString {
+            append(
+                AnnotatedString(
+                    text,
+                    spanStyle = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                    )
+                )
+            )
+        },
+        modifier = modifier
+            .border(dimensionResource(id = R.dimen.basic_border), MaterialTheme.colors.surface)
+            .weight(weight)
+            .padding(dimensionResource(id = R.dimen.dimen_8dp)),
+        color = color
+    )
 }
 
 @Composable
@@ -215,31 +247,32 @@ private fun EffectSection(
 ) {
     Text(
         text = stringResource(id = R.string.effect_label),
-        fontSize = 24.sp,
+        fontSize = dimensionResource(id = R.dimen.dimen_24dp).value.sp,
         fontWeight = FontWeight.Bold
     )
-    Text(text = effect, fontSize = 20.sp)
-    Spacer(modifier = modifier.height(4.dp))
-    Text(text = shortEffect, fontSize = 20.sp)
-    Spacer(modifier = modifier.height(8.dp))
+    Text(text = effect, fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp)
+    Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_4dp)))
+    Text(text = shortEffect, fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp)
+    Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
     Text(
-        text = stringResource(id = R.string.results_in_label),
-        fontSize = 24.sp,
+        text = stringResource(id = R.string.feature_list_per_game_label),
+        fontSize = dimensionResource(id = R.dimen.font_size_medium).value.sp,
         fontWeight = FontWeight.Bold
     )
+    Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_4dp)))
 }
 
 private fun getFilteredEffectEntries(list: List<EffectEntryX>): List<EffectEntryX> {
 
     return list.filter {
-        it.language.name.contains("en")
+        it.language.name.contains(FILTERLANGUAGE)
     }
 }
 
 private fun getFilteredFlavorEntries(list: List<FlavorTextEntry>): List<FlavorTextEntry> {
 
     return list.filter {
-        it.language.name.contains("en")
+        it.language.name.contains(FILTERLANGUAGE)
     }
 }
 

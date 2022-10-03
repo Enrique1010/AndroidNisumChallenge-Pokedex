@@ -7,4 +7,10 @@
     <dimen name="card_image_width">92.dp</dimen>
     <dimen name="card_image_height">124.dp</dimen>
     <dimen name="common_screen_font_size">20.dp</dimen>
+    <dimen name="dimen_8dp">8dp</dimen>
+    <dimen name="ability_details_title">30dp</dimen>
+    <dimen name="dimen_16dp">16dp</dimen>
+    <dimen name="dimen_32dp">32dp</dimen>
+    <dimen name="basic_border">1dp</dimen>
+    <dimen name="font_size_medium">20dp</dimen>
 </resources>

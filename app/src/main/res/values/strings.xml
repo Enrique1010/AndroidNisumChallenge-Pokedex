@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">PokedexApp</string>
-    <string name="welcome_message">Hi, try the search bar.</string>
     <!--Errors-->
     <string name="error_server">Error connecting to the server, please try again later.</string>
     <string name="timeout_error">The connection to the server timed out, please try again.</string>
@@ -9,9 +8,13 @@
     <string name="error_no_internet">No internet Connection.</string>
     <string name="try_again_btn_text">Try Again</string>
     <string name="cant_see_details_without_internet_text">To see details check your internet connection.</string>
+    <!--Details Screen-->
     <string name="search_textfield_hint">Search Pokemons…</string>
     <string name="search_something_wrong">Something went wrong, check your internet connection and try again.</string>
+    <!--Ability Details Screen-->
     <string name="base_stats_label">Base stats:</string>
     <string name="effect_label">Effect</string>
-    <string name="results_in_label">"Ability Results in: "</string>
+    <string name="feature_list_per_game_label">"Feature List per Game."</string>
+    <string name="feature_table_game_label">Game/s</string>
+    <string name="feature_table_feature_label">Feature</string>
 </resources>

@@ -32,7 +32,8 @@ fun ScreenWithMessage(
         Text(
             text = stringResource(id = message),
             fontSize = dimensionResource(id = R.dimen.common_screen_font_size).value.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -51,7 +52,8 @@ fun ScreenWithMessage(
         Text(
             text = stringResource(id = message),
             fontSize = dimensionResource(id = R.dimen.common_screen_font_size).value.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
         OutlinedButton(onClick = onClick) {
             Text(text = stringResource(id = R.string.try_again_btn_text))

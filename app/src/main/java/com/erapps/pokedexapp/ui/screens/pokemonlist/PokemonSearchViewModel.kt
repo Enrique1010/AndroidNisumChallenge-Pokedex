@@ -2,7 +2,6 @@ package com.erapps.pokedexapp.ui.screens.pokemonlist
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.erapps.pokedexapp.data.source.SearchPokemonRepository
@@ -20,6 +19,9 @@ class PokemonSearchViewModel @Inject constructor(
     private val _uiState = mutableStateOf<UiState?>(null)
     val uiState: State<UiState?> = _uiState
 
+    private val _isEmptyList = mutableStateOf(false)
+    val isEmptyList: State<Boolean> = _isEmptyList
+
     init {
         filterPokemonsByName("")
     }
@@ -31,6 +33,7 @@ class PokemonSearchViewModel @Inject constructor(
                 //return screen with try again when no internet and no data
                 if (response.isEmpty()) {
                     _uiState.value = null
+                    _isEmptyList.value = true
                     return@mapResultToUiState
                 }
 
@@ -41,6 +44,7 @@ class PokemonSearchViewModel @Inject constructor(
                 //return empty screen when no filtered results
                 if (filteredPokemons.isEmpty()) {
                     _uiState.value = UiState.Empty
+                    _isEmptyList.value = true
                     return@mapResultToUiState
                 }
 

@@ -7,7 +7,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -56,6 +55,7 @@ fun PokemonListScreen(
 
     //needed variables
     val uiState = viewModel.uiState.value
+    val isEmptyList = viewModel.isEmptyList.value
     val text = remember { mutableStateOf("") }
     val focused = remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -124,9 +124,19 @@ fun PokemonListScreen(
                     LoadingScreen()
                 }
                 else -> {
-                    if (!status) {
-                        ScreenWithMessage(message = R.string.search_something_wrong) {
-                            viewModel.filterPokemonsByName("")
+                    when {
+                        !status && isEmptyList -> {
+                            ScreenWithMessage(message = R.string.search_something_wrong) {
+                                viewModel.filterPokemonsByName("")
+                            }
+                        }
+                        status && isEmptyList -> {
+                            ScreenWithMessage(message = R.string.search_something_wrong) {
+                                viewModel.filterPokemonsByName("")
+                            }
+                        }
+                        else -> {
+                            LoadingScreen()
                         }
                     }
                 }

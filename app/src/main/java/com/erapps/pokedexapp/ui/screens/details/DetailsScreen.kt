@@ -28,7 +28,6 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +39,7 @@ import com.erapps.pokedexapp.data.api.models.Pokemon
 import com.erapps.pokedexapp.data.api.models.pokemon.Ability
 import com.erapps.pokedexapp.data.api.models.pokemon.Stat
 import com.erapps.pokedexapp.data.api.models.pokemon.Type
+import com.erapps.pokedexapp.ui.screens.pokemonlist.getNetworkStatus
 import com.erapps.pokedexapp.ui.shared.ErrorScreen
 import com.erapps.pokedexapp.ui.shared.LoadingScreen
 import com.erapps.pokedexapp.ui.shared.UiState
@@ -59,6 +59,7 @@ fun DetailsScreen(
 ) {
 
     val uiState = viewModel.uiState.value
+    val status = getNetworkStatus()
 
     Box(
         modifier = modifier

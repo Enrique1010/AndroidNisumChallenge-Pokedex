@@ -13,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -25,17 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.erapps.pokedexapp.R
 import com.erapps.pokedexapp.data.api.models.moves.EffectEntry
 import com.erapps.pokedexapp.data.api.models.moves.FlavorTextEntry
 import com.erapps.pokedexapp.data.api.models.moves.MoveDetails
-import com.erapps.pokedexapp.ui.shared.BackButtonBar
-import com.erapps.pokedexapp.ui.shared.ErrorScreen
-import com.erapps.pokedexapp.ui.shared.LoadingScreen
-import com.erapps.pokedexapp.ui.shared.UiState
+import com.erapps.pokedexapp.ui.shared.DetailsPageWithState
+import com.erapps.pokedexapp.ui.shared.SpacedDivider
 import com.erapps.pokedexapp.utils.Constants.ANIMPOKEMONSTATDURATION
 import com.erapps.pokedexapp.utils.Constants.COLUMN1WEIGHT
 import com.erapps.pokedexapp.utils.Constants.COLUMN2WEIGHT
@@ -54,66 +50,40 @@ fun MoveDetailsScreen(
     val uiState = viewModel.uiState.value
     val previousBackGroundColor = viewModel.backGroundColor.value
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colors.surface,
-                        previousBackGroundColor,
-                        MaterialTheme.colors.surface
-                    )
-                )
+    DetailsPageWithState<MoveDetails>(
+        previousBackGroundColor = previousBackGroundColor,
+        uiState = uiState,
+        onBackPressed = onBackPressed
+    ) { data ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.dimen_8dp))
+                .background(MaterialTheme.colors.surface),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = data.name.makeGoodTitle(),
+                fontSize = dimensionResource(id = R.dimen.ability_details_title).value.sp,
+                fontWeight = FontWeight.Bold,
+                color = previousBackGroundColor
             )
-    ) {
-        when (uiState) {
-            UiState.Loading -> {
-                LoadingScreen()
-            }
-            is UiState.Error -> {
-                ErrorScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(id = R.dimen.dimen_8dp))
-                        .align(Alignment.TopCenter),
-                    errorMessage = uiState.errorMessage,
-                    errorStringResource = uiState.errorStringResource
-                )
-            }
-            is UiState.Success<*> -> {
-                val data = uiState.data as MoveDetails
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(id = R.dimen.dimen_8dp))
-                        .background(MaterialTheme.colors.surface),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = data.name.makeGoodTitle(),
-                        fontSize = dimensionResource(id = R.dimen.ability_details_title).value.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = previousBackGroundColor
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_16dp)))
-                    MoveDetailsScreenContent(moveDetails = data, color = previousBackGroundColor)
-                }
-            }
-            else -> {}
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_16dp)))
+            MoveDetailsScreenContent(moveDetails = data, color = previousBackGroundColor)
         }
-        BackButtonBar(onBackPressed = onBackPressed)
     }
 
 }
 
 @Composable
 fun MoveDetailsScreenContent(
+    modifier: Modifier = Modifier,
     moveDetails: MoveDetails,
     color: Color
 ) {
 
+    SpacedDivider(modifier = modifier, color = color)
     TypeSection(moveType = moveDetails.type.name)
     StatsSection(
         color = color,
@@ -121,10 +91,12 @@ fun MoveDetailsScreenContent(
         power = moveDetails.power,
         powerPoints = moveDetails.pp
     )
+    SpacedDivider(modifier = modifier, color = color)
     EffectSection(
         effectEntries = moveDetails.effect_entries,
         effectChance = moveDetails.effect_chance
     )
+    SpacedDivider(modifier = modifier, color = color)
     MoveEffectsTable(flavorEntries = moveDetails.flavor_text_entries, color = color)
 }
 
@@ -174,10 +146,11 @@ private fun StatsSection(
         MoveStat(name = stringResource(id = R.string.power_stat_text), value = power)
     )
 
-    Column(modifier = modifier.padding(
-        horizontal = dimensionResource(id = R.dimen.dimen_16dp),
-        vertical = dimensionResource(id = R.dimen.dimen_8dp)
-    )
+    Column(
+        modifier = modifier.padding(
+            horizontal = dimensionResource(id = R.dimen.dimen_16dp),
+            vertical = dimensionResource(id = R.dimen.dimen_8dp)
+        )
     ) {
         Row(
             modifier = modifier.fillMaxWidth()
@@ -205,7 +178,7 @@ private fun StatsSection(
                         animDelay = i * MAXMOVESTAT
                     )
                 }
-                Spacer(modifier = modifier.height(8.dp))
+                Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
             }
         }
     }
@@ -303,7 +276,10 @@ private fun EffectSection(
                             "$effectChance"
                         )
                     val shortEffectWithChance =
-                        effects.effect.replace(stringResource(id = R.string.effect_replace_text), "$effectChance")
+                        effects.effect.replace(
+                            stringResource(id = R.string.effect_replace_text),
+                            "$effectChance"
+                        )
 
                     EffectWithChanceTextSection(effectWithChance, modifier, shortEffectWithChance)
                 }
@@ -323,12 +299,17 @@ private fun EffectTextSection(
     effects: EffectEntry,
     modifier: Modifier = Modifier
 ) {
-    Text(text = effects.effect, fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp)
+    Text(
+        text = effects.effect,
+        fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp,
+        maxLines = 10,
+        overflow = TextOverflow.Ellipsis
+    )
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_4dp)))
     Text(
         text = effects.short_effect,
         fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp,
-        maxLines = 10,
+        maxLines = 5,
         overflow = TextOverflow.Ellipsis
     )
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
@@ -340,12 +321,17 @@ private fun EffectWithChanceTextSection(
     modifier: Modifier = Modifier,
     shortEffectWithChance: String
 ) {
-    Text(text = effectWithChance, fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp)
+    Text(
+        text = effectWithChance,
+        fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp,
+        maxLines = 10,
+        overflow = TextOverflow.Ellipsis
+    )
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_4dp)))
     Text(
         text = shortEffectWithChance,
         fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp,
-        maxLines = 10,
+        maxLines = 5,
         overflow = TextOverflow.Ellipsis
     )
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
@@ -369,9 +355,11 @@ private fun MoveEffectsTable(
         getFilteredFlavorEntries(flavorEntries)
     }
 
-    Column(modifier = modifier.padding(
-        horizontal = dimensionResource(id = R.dimen.dimen_16dp),
-        vertical = dimensionResource(id = R.dimen.dimen_8dp))
+    Column(
+        modifier = modifier.padding(
+            horizontal = dimensionResource(id = R.dimen.dimen_16dp),
+            vertical = dimensionResource(id = R.dimen.dimen_8dp)
+        )
     ) {
         //header
         Row(

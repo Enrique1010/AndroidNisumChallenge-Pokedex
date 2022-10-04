@@ -12,7 +12,7 @@
     <!--Details Screen-->
     <string name="search_textfield_hint">Search Pokemons…</string>
     <string name="encounters_row_text">Encounters</string>
-    <string name="specie_row_text">"Specie: "</string>
+    <string name="specie_row_text">"Specie Details"</string>
     <string name="ability_section_label">Abilities</string>
     <string name="kg_unit">kg</string>
     <string name="meter_unit">m</string>
@@ -38,4 +38,20 @@
     <string name="location_area_title">Location Area</string>
     <string name="encounter_method_label">Method</string>
     <string name="encounter_rate_label">Rate</string>
+    <!--Species and Evolution Chain-->
+    <string name="evolution_chain">Evolution Chain</string>
+    <string name="this_pokemon_has_not_evolution_chain">This pokemon has no evolution chain.</string>
+    <string name="color_label">"Color: "</string>
+    <string name="grow_rate_label">Grow Rate:</string>
+    <string name="shape_label">Shape:</string>
+    <string name="habitat_label">Habitat:</string>
+    <string name="generation_label">Generation:</string>
+    <string name="happiness">Happiness</string>
+    <string name="captura_rate">Capture Rate</string>
+    <string name="description_label">Description</string>
+    <string name="none">NA</string>
+    <string name="form1">Form 1</string>
+    <string name="form2">Form 2</string>
+    <string name="form3">Form 3</string>
+    <string name="varieties_label">Varieties:</string>
 </resources>

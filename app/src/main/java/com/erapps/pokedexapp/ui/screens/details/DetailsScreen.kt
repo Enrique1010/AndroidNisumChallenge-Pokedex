@@ -25,13 +25,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
@@ -93,8 +91,8 @@ fun DetailsScreen(
                 ErrorScreen(
                     modifier = modifier
                         .fillMaxSize()
-                        .clip(RoundedCornerShape(10.dp))
-                        .padding(8.dp)
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_shape_basic)))
+                        .padding(dimensionResource(id = R.dimen.dimen_8dp))
                         .align(Alignment.TopCenter),
                     errorMessage = uiState.errorMessage,
                     errorStringResource = uiState.errorStringResource
@@ -104,8 +102,8 @@ fun DetailsScreen(
                 DetailsScreenContent(
                     modifier = modifier
                         .fillMaxSize()
-                        .clip(RoundedCornerShape(10.dp))
-                        .padding(16.dp)
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_shape_basic)))
+                        .padding(dimensionResource(id = R.dimen.dimen_16dp))
                         .align(Alignment.TopCenter),
                     pokemon = uiState.data as Pokemon,
                     backGroundColor = viewModel.backGroundColor,
@@ -386,7 +384,7 @@ private fun PokemonStat(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
-            .clip(RoundedCornerShape(4.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.dimen_4dp)))
             .background(
                 if (isSystemInDarkTheme()) {
                     Color(0xFF505050)
@@ -401,9 +399,9 @@ private fun PokemonStat(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(curPercent.value)
-                .clip(RoundedCornerShape(4.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.dimen_4dp)))
                 .background(statColor)
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.dimen_8dp))
         ) {
             Text(
                 text = statName,
@@ -589,10 +587,7 @@ private fun PokemonSpecieSection(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = buildAnnotatedString {
-                append(stringResource(id = R.string.specie_row_text))
-                append(" ${species.name.makeGoodTitle()}")
-            },
+            text = stringResource(id = R.string.specie_row_text),
             fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(id = R.dimen.font_size_medium).value.sp
         )

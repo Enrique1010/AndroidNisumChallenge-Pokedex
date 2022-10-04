@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -29,7 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.erapps.pokedexapp.R
 import com.erapps.pokedexapp.data.api.models.encounters.locationarea.EncounterMethodRate
 import com.erapps.pokedexapp.data.api.models.encounters.locationarea.LocationAreaDetails
-import com.erapps.pokedexapp.ui.shared.*
+import com.erapps.pokedexapp.ui.shared.DetailsPageWithState
 import com.erapps.pokedexapp.utils.Constants
 import com.erapps.pokedexapp.utils.makeGoodTitle
 
@@ -42,55 +41,29 @@ fun LocationAreaScreen(
     val uiState = viewModel.uiState.value
     val previousBackGroundColor = viewModel.backGroundColor.value
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colors.surface,
-                        previousBackGroundColor,
-                        MaterialTheme.colors.surface
-                    )
-                )
+    DetailsPageWithState<LocationAreaDetails>(
+        previousBackGroundColor = previousBackGroundColor,
+        uiState = uiState,
+        emptyText = R.string.this_pokemon_cannot_be_found,
+        onBackPressed = onBackPressed
+    ) { data ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.dimen_8dp))
+                .background(MaterialTheme.colors.surface),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(id = R.string.location_area_title),
+                fontSize = dimensionResource(id = R.dimen.ability_details_title).value.sp,
+                fontWeight = FontWeight.Bold,
+                color = previousBackGroundColor
             )
-    ) {
-        when (uiState) {
-            UiState.Loading -> {
-                LoadingScreen(modifier = Modifier.background(MaterialTheme.colors.surface))
-            }
-            is UiState.Error -> {
-                ErrorScreen(
-                    errorMessage = uiState.errorMessage,
-                    errorStringResource = uiState.errorStringResource
-                )
-            }
-            is UiState.Empty -> {
-                ScreenWithMessage(message = R.string.this_pokemon_cannot_be_found)
-            }
-            is UiState.Success<*> -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(id = R.dimen.dimen_8dp))
-                        .background(MaterialTheme.colors.surface),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    val data = uiState.data as LocationAreaDetails
-                    Text(
-                        text = stringResource(id = R.string.location_area_title),
-                        fontSize = dimensionResource(id = R.dimen.ability_details_title).value.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = previousBackGroundColor
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_16dp)))
-                    LocationAreaScreenContent(locationArea = data, color = previousBackGroundColor)
-                }
-            }
-            else -> {}
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_16dp)))
+            LocationAreaScreenContent(locationArea = data, color = previousBackGroundColor)
         }
-        BackButtonBar(onBackPressed = onBackPressed)
     }
 }
 

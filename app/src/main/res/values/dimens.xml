@@ -18,4 +18,5 @@
     <dimen name="move_type_section_text_size">18dp</dimen>
     <dimen name="type_section_height">35dp</dimen>
     <dimen name="type_section_text_size">18dp</dimen>
+    <dimen name="rounded_corner_shape_basic">10dp</dimen>
 </resources>

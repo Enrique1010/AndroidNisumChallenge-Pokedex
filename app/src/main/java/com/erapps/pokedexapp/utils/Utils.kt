@@ -16,6 +16,15 @@ fun String.getIdFromUrl(): String {
         .toList()[1]
 }
 
+fun getSpecialConditionColor(conditionName: String): Color {
+    return when(conditionName) {
+        "legendary" -> SpAtkColor
+        "mythic" -> SpdColor
+        "baby" -> SpDefColor
+        else -> Color.DarkGray
+    }
+}
+
 fun getPokemonTypeToColor(type: String): Color {
     return when(type.lowercase()) {
         "normal" -> TypeNormal

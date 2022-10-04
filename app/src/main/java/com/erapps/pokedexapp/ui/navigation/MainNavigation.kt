@@ -13,6 +13,7 @@ import com.erapps.pokedexapp.ui.screens.details.abilities.AbilityDetailsScreen
 import com.erapps.pokedexapp.ui.screens.details.encounters.EncountersScreen
 import com.erapps.pokedexapp.ui.screens.details.encounters.locationarea.LocationAreaScreen
 import com.erapps.pokedexapp.ui.screens.details.moves.movedetails.MoveDetailsScreen
+import com.erapps.pokedexapp.ui.screens.details.species.SpecieDetailsScreen
 import com.erapps.pokedexapp.ui.screens.pokemonlist.PokemonListScreen
 
 @Composable
@@ -44,7 +45,7 @@ private fun NavGraphBuilder.detailsGraph(navController: NavHostController) {
                     safeNavigate(navController, NavItem.Encounters.createRoute(url, colorRGB))
                 },
                 onSpecieSectionClick = { url, colorRGB ->
-                                       //nothing for now
+                    safeNavigate(navController ,NavItem.SpecieDetails.createRoute(url, colorRGB))
                 },
                 onBackPressed = { navController.popBackStack() }
             )
@@ -61,6 +62,11 @@ private fun NavGraphBuilder.detailsGraph(navController: NavHostController) {
             }
         }
         encountersGraph(navController)
+        composable(NavItem.SpecieDetails) {
+            SpecieDetailsScreen {
+                navController.popBackStack()
+            }
+        }
     }
 }
 

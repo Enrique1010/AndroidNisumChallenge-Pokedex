@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -20,6 +21,62 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.erapps.pokedexapp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+
+@Composable
+fun <T> DetailsPageWithState(
+    previousBackGroundColor: Color,
+    uiState: UiState?,
+    emptyText: Int? = null,
+    onBackPressed: () -> Unit,
+    successBlock: @Composable (T) -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        MaterialTheme.colors.surface,
+                        previousBackGroundColor,
+                        MaterialTheme.colors.surface
+                    )
+                )
+            )
+    ) {
+        when (uiState) {
+            UiState.Loading -> {
+                LoadingScreen(modifier = Modifier.background(MaterialTheme.colors.surface))
+            }
+            is UiState.Empty -> {
+                emptyText?.let {
+                    ScreenWithMessage(message = emptyText)
+                }
+            }
+            is UiState.Error -> {
+                ErrorScreen(
+                    errorMessage = uiState.errorMessage,
+                    errorStringResource = uiState.errorStringResource
+                )
+            }
+            is UiState.Success<*> -> {
+                @Suppress("UNCHECKED_CAST")
+                successBlock(uiState.data as T)
+            }
+            else -> {}
+        }
+        BackButtonBar(onBackPressed = onBackPressed)
+    }
+}
+
+@Composable
+fun SpacedDivider(
+    modifier: Modifier,
+    color: Color
+) {
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
+    Divider(modifier.fillMaxWidth(), color = color)
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
+}
 
 @Composable
 fun BackButtonBar(

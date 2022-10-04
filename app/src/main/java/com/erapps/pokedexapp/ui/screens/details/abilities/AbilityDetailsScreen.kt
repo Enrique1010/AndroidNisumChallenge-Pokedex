@@ -14,7 +14,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -29,10 +28,8 @@ import com.erapps.pokedexapp.R
 import com.erapps.pokedexapp.data.api.models.abilities.AbilityDetails
 import com.erapps.pokedexapp.data.api.models.abilities.EffectEntryX
 import com.erapps.pokedexapp.data.api.models.abilities.FlavorTextEntry
-import com.erapps.pokedexapp.ui.shared.BackButtonBar
-import com.erapps.pokedexapp.ui.shared.ErrorScreen
-import com.erapps.pokedexapp.ui.shared.LoadingScreen
-import com.erapps.pokedexapp.ui.shared.UiState
+import com.erapps.pokedexapp.ui.shared.DetailsPageWithState
+import com.erapps.pokedexapp.ui.shared.SpacedDivider
 import com.erapps.pokedexapp.utils.Constants.COLUMN1WEIGHT
 import com.erapps.pokedexapp.utils.Constants.COLUMN2WEIGHT
 import com.erapps.pokedexapp.utils.Constants.FILTERLANGUAGE
@@ -47,56 +44,32 @@ fun AbilityDetailsScreen(
     val uiState = viewModel.uiState.value
     val previousBackGroundColor = viewModel.backGroundColor.value
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colors.surface,
-                        previousBackGroundColor,
-                        MaterialTheme.colors.surface
-                    )
-                )
+    DetailsPageWithState<AbilityDetails>(
+        previousBackGroundColor = previousBackGroundColor,
+        uiState = uiState,
+        onBackPressed = onBackPressed
+    ) { data ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.dimen_8dp))
+                .background(MaterialTheme.colors.surface),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = data.name.makeGoodTitle(),
+                fontSize = dimensionResource(id = R.dimen.ability_details_title).value.sp,
+                fontWeight = FontWeight.Bold,
+                color = previousBackGroundColor
             )
-    ) {
-        when (uiState) {
-            UiState.Loading -> {
-                LoadingScreen(modifier = Modifier.background(MaterialTheme.colors.surface))
-            }
-            is UiState.Error -> {
-                ErrorScreen(
-                    errorMessage = uiState.errorMessage,
-                    errorStringResource = uiState.errorStringResource
-                )
-            }
-            is UiState.Success<*> -> {
-                val data = uiState.data as AbilityDetails
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(id = R.dimen.dimen_8dp))
-                        .background(MaterialTheme.colors.surface),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = data.name.makeGoodTitle(),
-                        fontSize = dimensionResource(id = R.dimen.ability_details_title).value.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = previousBackGroundColor
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_16dp)))
-                    AbilityDetailsContent(
-                        flavorTextEntries = data.flavor_text_entries,
-                        effectEntries = data.effect_entries,
-                        color = previousBackGroundColor
-                    )
-                }
-            }
-            else -> {}
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_16dp)))
+            AbilityDetailsContent(
+                flavorTextEntries = data.flavor_text_entries,
+                effectEntries = data.effect_entries,
+                color = previousBackGroundColor
+            )
         }
-        BackButtonBar(onBackPressed = onBackPressed)
     }
 }
 
@@ -120,7 +93,8 @@ private fun AbilityDetailsContent(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-        EffectSection(effect = effects.effect, shortEffect = effects.short_effect)
+        SpacedDivider(modifier = modifier, color = color)
+        EffectSection(effect = effects.effect, shortEffect = effects.short_effect, color = color)
         TableScreen(flavorTexts = flavorTexts, color = color)
     }
 }
@@ -217,7 +191,8 @@ private fun RowScope.AnnotatedStringTableCell(
 private fun EffectSection(
     modifier: Modifier = Modifier,
     effect: String,
-    shortEffect: String
+    shortEffect: String,
+    color: Color
 ) {
     Text(
         text = stringResource(id = R.string.effect_label),
@@ -237,7 +212,7 @@ private fun EffectSection(
         maxLines = 10,
         overflow = TextOverflow.Ellipsis
     )
-    Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
+    SpacedDivider(modifier = modifier, color = color)
     Text(
         text = stringResource(id = R.string.feature_list_per_game_label),
         fontSize = dimensionResource(id = R.dimen.font_size_medium).value.sp,

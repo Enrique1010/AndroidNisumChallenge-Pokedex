@@ -66,7 +66,6 @@ fun PokemonListScreen(
 
     Scaffold(
         topBar = {
-
             SearchBar(
                 query = text,
                 onSearchClick = {

@@ -7,6 +7,7 @@
     <string name="empty_text">No results, please try another search.</string>
     <string name="error_no_internet">No internet Connection.</string>
     <string name="try_again_btn_text">Try Again</string>
+    <string name="go_back_and_try_again">Something went wrong, go back and try again.</string>
     <string name="cant_see_details_without_internet_text">To see details check your internet connection.</string>
     <!--Details Screen-->
     <string name="search_textfield_hint">Search Pokemons…</string>
@@ -17,6 +18,13 @@
     <string name="feature_list_per_game_label">"Feature List per Game."</string>
     <string name="feature_table_game_label">Game/s</string>
     <string name="feature_table_feature_label">Feature</string>
-    <string name="go_back_and_try_again">Something went wrong, go back and try again.</string>
+    <!--Moves and Moves Details Screen-->
     <string name="moves_label">Teachable Moves</string>
+    <string name="move_effect_per_game_label">Move effect per game.</string>
+    <string name="accuracy_stat_text">Accuracy</string>
+    <string name="power_stat_text">Power</string>
+    <string name="this_move_can_be_used_text1">"This move can be used "</string>
+    <string name="this_move_can_be_used_text2">times.</string>
+    <string name="effect_contains_text">effect_chance</string>
+    <string name="effect_replace_text">$effect_chance</string>
 </resources>

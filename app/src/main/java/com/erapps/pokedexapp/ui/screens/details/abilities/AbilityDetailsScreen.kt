@@ -1,14 +1,14 @@
 package com.erapps.pokedexapp.ui.screens.details.abilities
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -32,11 +32,10 @@ import com.erapps.pokedexapp.ui.shared.BackButtonBar
 import com.erapps.pokedexapp.ui.shared.ErrorScreen
 import com.erapps.pokedexapp.ui.shared.LoadingScreen
 import com.erapps.pokedexapp.ui.shared.UiState
+import com.erapps.pokedexapp.utils.Constants.COLUMN1WEIGHT
+import com.erapps.pokedexapp.utils.Constants.COLUMN2WEIGHT
+import com.erapps.pokedexapp.utils.Constants.FILTERLANGUAGE
 import com.erapps.pokedexapp.utils.makeGoodTitle
-
-const val COLUMN1WEIGHT = .4f
-const val COLUMN2WEIGHT = .6f
-const val FILTERLANGUAGE = "en"
 
 @Composable
 fun AbilityDetailsScreen(
@@ -133,18 +132,16 @@ fun TableScreen(
     color: Color,
 ) {
 
-    val column1Weight = COLUMN1WEIGHT // 40%
-    val column2Weight = COLUMN2WEIGHT // 60%
     //header
     Row(Modifier.background(color)) {
         AnnotatedStringTableCell(
             text = stringResource(id = R.string.feature_table_game_label),
-            weight = column1Weight,
+            weight = COLUMN1WEIGHT,
             color = MaterialTheme.colors.onBackground
         )
         AnnotatedStringTableCell(
             text = stringResource(id = R.string.feature_table_feature_label),
-            weight = column2Weight,
+            weight = COLUMN2WEIGHT,
             color = MaterialTheme.colors.onBackground
         )
     }
@@ -164,10 +161,10 @@ fun TableScreen(
                 ) {
                     AnnotatedStringTableCell(
                         text = flavorTexts.version_group.name.makeGoodTitle(),
-                        weight = column1Weight,
+                        weight = COLUMN1WEIGHT,
                         color = color
                     )
-                    TableCell(text = flavorTexts.flavor_text, weight = column2Weight)
+                    TableCell(text = flavorTexts.flavor_text, weight = COLUMN2WEIGHT)
                 }
             }
         }
@@ -175,7 +172,7 @@ fun TableScreen(
 }
 
 @Composable
-fun RowScope.TableCell(
+private fun RowScope.TableCell(
     text: String,
     weight: Float,
 ) {
@@ -190,7 +187,7 @@ fun RowScope.TableCell(
 }
 
 @Composable
-fun RowScope.AnnotatedStringTableCell(
+private fun RowScope.AnnotatedStringTableCell(
     modifier: Modifier = Modifier,
     text: String,
     weight: Float,

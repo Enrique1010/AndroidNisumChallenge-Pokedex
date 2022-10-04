@@ -1,12 +1,12 @@
 package com.erapps.pokedexapp.data.api.models.moves
 
 data class MoveDetails(
-    val accuracy: Int,
+    val accuracy: Int?,
     val contest_combos: ContestCombos,
     val contest_effect: ContestEffect,
     val contest_type: ContestType,
     val damage_class: DamageClass,
-    val effect_chance: Any,
+    val effect_chance: Int?,
     val effect_changes: List<Any>,
     val effect_entries: List<EffectEntry>,
     val flavor_text_entries: List<FlavorTextEntry>,
@@ -18,7 +18,7 @@ data class MoveDetails(
     val name: String,
     val names: List<Name>,
     val past_values: List<Any>,
-    val power: Int,
+    val power: Int?,
     val pp: Int,
     val priority: Int,
     val stat_changes: List<Any>,

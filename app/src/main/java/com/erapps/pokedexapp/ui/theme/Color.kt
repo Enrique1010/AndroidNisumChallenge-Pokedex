@@ -16,6 +16,10 @@ val SpAtkColor = Color(0.671f, 0f, 1f, 0.57f)
 val SpDefColor = Color(0.224f, 0.624f, 0.675f, 1.0f)
 val HPColor = Color(0f, 1f, 0.063f, 0.55f)
 
+//pokemon moves stats color
+val AccuracyColor = Color(0.129f, 0.588f, 0.953f, 1.0f)
+val PowerColor = Color(0.957f, 0.263f, 0.212f, 1.0f)
+
 //pokemon types colors
 val TypeNormal = Color(0xFFA8A77A)
 val TypeFire = Color(0xFFEE8130)

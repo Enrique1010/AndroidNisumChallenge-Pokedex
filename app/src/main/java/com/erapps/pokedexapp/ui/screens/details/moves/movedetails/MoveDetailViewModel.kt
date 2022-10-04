@@ -34,7 +34,7 @@ class MoveDetailsViewModel @Inject constructor(
     }
 
     private fun getMoveDetails(url: String) = viewModelScope.launch {
-        repository.getAbilityDetails(url).collect { result ->
+        repository.getMoveDetails(url).collect { result ->
             mapResultToUiState(result, _uiState) { response ->
                 _uiState.value = UiState.Success(response)
             }

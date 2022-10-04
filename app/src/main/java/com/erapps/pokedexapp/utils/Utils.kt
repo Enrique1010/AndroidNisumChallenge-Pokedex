@@ -40,6 +40,14 @@ fun getPokemonTypeToColor(type: String): Color {
     }
 }
 
+fun getMoveStatColor(stat: String): Color {
+    return when(stat){
+        "accuracy" -> AccuracyColor
+        "power" -> PowerColor
+        else -> Color.White
+    }
+}
+
 fun getPokemonStatToColor(stat: Stat): Color {
     return when(stat.stat.name.lowercase()) {
         "hp" -> HPColor

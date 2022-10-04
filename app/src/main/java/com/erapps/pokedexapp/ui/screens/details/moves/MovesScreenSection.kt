@@ -1,5 +1,6 @@
 package com.erapps.pokedexapp.ui.screens.details.moves
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,12 +22,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.erapps.pokedexapp.R
 import com.erapps.pokedexapp.data.api.models.pokemon.Move
+import com.erapps.pokedexapp.ui.screens.getNetworkStatus
 import com.erapps.pokedexapp.utils.makeGoodTitle
 
 @Composable
@@ -89,7 +92,7 @@ fun MovesHeaderSection(
         )
         Icon(
             modifier = modifier.padding(dimensionResource(id = R.dimen.dimen_16dp)),
-            imageVector = if(!isExpanded) Icons.Default.SwipeUp else Icons.Default.SwipeDown,
+            imageVector = if (!isExpanded) Icons.Default.SwipeUp else Icons.Default.SwipeDown,
             contentDescription = null
         )
     }
@@ -103,6 +106,9 @@ fun MoveListItem(
     onMoveClick: (String, Int) -> Unit,
     color: Color
 ) {
+    val context = LocalContext.current
+    val status = getNetworkStatus()
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -112,7 +118,19 @@ fun MoveListItem(
                 RoundedCornerShape(dimensionResource(id = R.dimen.dimen_4dp))
             )
             .background(MaterialTheme.colors.surface)
-            .clickable { onMoveClick(move.move.url, color.toArgb()) },
+            .clickable {
+                if (!status) {
+                    Toast
+                        .makeText(
+                            context,
+                            R.string.cant_see_details_without_internet_text,
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                    return@clickable
+                }
+                onMoveClick(move.move.url, color.toArgb())
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

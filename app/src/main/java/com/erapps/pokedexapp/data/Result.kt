@@ -3,7 +3,7 @@ package com.erapps.pokedexapp.data
 import java.io.IOException
 
 /**
- * A generic class that holds a value with its loading status.
+ * A generic class that holds a value with its loading status based on "Resource" google example class.
  * @param <T>
  */
 sealed class Result<out R, out E> {

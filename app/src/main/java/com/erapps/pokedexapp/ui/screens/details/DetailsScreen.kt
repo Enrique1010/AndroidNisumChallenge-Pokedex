@@ -48,6 +48,7 @@ import com.erapps.pokedexapp.utils.getPokemonTypeToColor
 import com.erapps.pokedexapp.utils.makeGoodTitle
 import kotlin.math.round
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DetailsScreen(
     modifier: Modifier = Modifier,
@@ -59,6 +60,7 @@ fun DetailsScreen(
 ) {
 
     val uiState = viewModel.uiState.value
+    val scaffoldState = rememberBottomSheetScaffoldState()
 
     Box(
         modifier = modifier
@@ -99,12 +101,15 @@ fun DetailsScreen(
                     backGroundColor = viewModel.backGroundColor,
                     onAbilityClick = onAbilityClick,
                     onEncounterSectionClick = onEncounterSectionClick,
-                    onMoveClick = onMoveClick
+                    onMoveClick = onMoveClick,
+                    scaffoldState = scaffoldState
                 )
             }
             else -> {}
         }
-        BackButtonBar(modifier, onBackPressed)
+        if (scaffoldState.bottomSheetState.isCollapsed){
+            BackButtonBar(modifier, onBackPressed)
+        }
     }
 
 }
@@ -113,13 +118,13 @@ fun DetailsScreen(
 @Composable
 private fun DetailsScreenContent(
     modifier: Modifier = Modifier,
+    scaffoldState: BottomSheetScaffoldState,
     pokemon: Pokemon,
     onAbilityClick: (String, Int) -> Unit,
     onEncounterSectionClick: (String, Int) -> Unit,
     onMoveClick: (String, Int) -> Unit,
     backGroundColor: MutableState<Color>
 ) {
-    val scaffoldState = rememberBottomSheetScaffoldState()
 
     BottomSheetScaffold(
         modifier = modifier,
@@ -227,7 +232,7 @@ private fun PokemonTypeSection(types: List<Type>) {
         modifier = Modifier
             .padding(16.dp)
     ) {
-        for (type in types) {
+        types.forEach { type ->
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -484,6 +489,8 @@ private fun EncountersSection(
     backGroundColor: MutableState<Color>,
     onEncounterSectionClick: (String, Int) -> Unit,
 ) {
+    val context = LocalContext.current
+    val status = getNetworkStatus()
 
     Spacer(modifier = modifier.height(8.dp))
     Row(
@@ -496,6 +503,16 @@ private fun EncountersSection(
         Text(text = "Encounters", fontWeight = FontWeight.Bold, fontSize = 20.sp)
         Icon(
             modifier = modifier.clickable {
+                if (!status) {
+                    Toast
+                        .makeText(
+                            context,
+                            R.string.cant_see_details_without_internet_text,
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                    return@clickable
+                }
                 onEncounterSectionClick(encountersUrl, backGroundColor.value.toArgb())
             },
             imageVector = Icons.Default.NavigateNext,

@@ -3,10 +3,10 @@ package com.erapps.pokedexapp.ui.theme
 import androidx.compose.ui.graphics.Color
 
 //app primary and secondary
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val Purple200 = Color(0xFFBF4941)
+val Purple500 = Color(0xFFD13B30)
+val Purple700 = Color(0xFFCD2D21)
+val Teal200 = Color(0xFF363333)
 
 //pokemon stats colors
 val SpdColor = Color(1f, 0f, 0.8f, 0.7f)

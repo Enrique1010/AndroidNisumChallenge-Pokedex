@@ -5,7 +5,6 @@ import com.erapps.pokedexapp.data.api.PokeApiService
 import com.erapps.pokedexapp.data.api.models.Pokemon
 import com.erapps.pokedexapp.data.api.models.abilities.AbilityDetails
 import com.erapps.pokedexapp.data.api.models.encounters.PokemonEncounters
-import com.erapps.pokedexapp.data.api.models.encounters.ecountermethod.EncounterMethodDetails
 import com.erapps.pokedexapp.data.api.models.encounters.locationarea.LocationAreaDetails
 import com.erapps.pokedexapp.data.api.models.moves.MoveDetails
 import com.erapps.pokedexapp.data.api.models.species.SpeciesDetails
@@ -24,7 +23,6 @@ interface PokemonDetailsRemoteDataSource {
     fun getEvolutionChain(url: String): Flow<Result<EvolutionChainDetails, *>>
     fun getEncounters(url: String): Flow<Result<PokemonEncounters, *>>
     fun getLocationAreas(url: String): Flow<Result<LocationAreaDetails, *>>
-    fun getEncounterMethod(url: String): Flow<Result<EncounterMethodDetails, *>>
 }
 
 class PokemonDetailsRemoteDataSourceImp @Inject constructor(
@@ -57,10 +55,6 @@ class PokemonDetailsRemoteDataSourceImp @Inject constructor(
 
     override fun getLocationAreas(url: String): Flow<Result<LocationAreaDetails, *>> = mapResponse(Dispatchers.IO) {
         pokeApiService.getLocationAreas(url)
-    }
-
-    override fun getEncounterMethod(url: String): Flow<Result<EncounterMethodDetails, *>> = mapResponse(Dispatchers.IO) {
-        pokeApiService.getEncounterMethod(url)
     }
 
 }

@@ -11,12 +11,17 @@
     <string name="cant_see_details_without_internet_text">To see details check your internet connection.</string>
     <!--Details Screen-->
     <string name="search_textfield_hint">Search Pokemons…</string>
+    <string name="encounters_row_text">Encounters</string>
+    <string name="specie_row_text">"Specie: "</string>
+    <string name="ability_section_label">Abilities</string>
+    <string name="kg_unit">kg</string>
+    <string name="meter_unit">m</string>
     <string name="search_something_wrong">Something went wrong, check your internet connection and try again.</string>
     <!--Ability Details Screen-->
     <string name="base_stats_label">Base stats:</string>
     <string name="effect_label">Effect</string>
     <string name="feature_list_per_game_label">"Feature List per Game."</string>
-    <string name="feature_table_game_label">Game/s</string>
+    <string name="feature_table_game_label">Game(s)</string>
     <string name="feature_table_feature_label">Feature</string>
     <!--Moves and Moves Details Screen-->
     <string name="moves_label">Teachable Moves</string>
@@ -27,4 +32,10 @@
     <string name="this_move_can_be_used_text2">times.</string>
     <string name="effect_contains_text">effect_chance</string>
     <string name="effect_replace_text">$effect_chance</string>
+    <!--Encounters-->
+    <string name="this_pokemon_cannot_be_found">This pokemon can not be found.</string>
+    <string name="encounters_title">Encounters</string>
+    <string name="location_area_title">Location Area</string>
+    <string name="encounter_method_label">Method</string>
+    <string name="encounter_rate_label">Rate</string>
 </resources>

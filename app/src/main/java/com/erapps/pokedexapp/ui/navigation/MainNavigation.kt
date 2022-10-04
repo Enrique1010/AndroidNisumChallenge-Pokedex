@@ -10,6 +10,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.erapps.pokedexapp.ui.screens.details.DetailsScreen
 import com.erapps.pokedexapp.ui.screens.details.abilities.AbilityDetailsScreen
+import com.erapps.pokedexapp.ui.screens.details.encounters.EncountersScreen
+import com.erapps.pokedexapp.ui.screens.details.encounters.locationarea.LocationAreaScreen
 import com.erapps.pokedexapp.ui.screens.details.moves.movedetails.MoveDetailsScreen
 import com.erapps.pokedexapp.ui.screens.pokemonlist.PokemonListScreen
 
@@ -41,6 +43,9 @@ private fun NavGraphBuilder.detailsGraph(navController: NavHostController) {
                 onEncounterSectionClick = { url, colorRGB ->
                     safeNavigate(navController, NavItem.Encounters.createRoute(url, colorRGB))
                 },
+                onSpecieSectionClick = { url, colorRGB ->
+                                       //nothing for now
+                },
                 onBackPressed = { navController.popBackStack() }
             )
         }
@@ -52,6 +57,26 @@ private fun NavGraphBuilder.detailsGraph(navController: NavHostController) {
         }
         composable(NavItem.MoveDetails) {
             MoveDetailsScreen {
+                navController.popBackStack()
+            }
+        }
+        encountersGraph(navController)
+    }
+}
+
+private fun NavGraphBuilder.encountersGraph(navController: NavHostController) {
+
+    navigation(startDestination = NavItem.Encounters.route, route = NavItem.Encounters.baseRoute) {
+        composable(NavItem.Encounters.route) {
+            EncountersScreen(
+                onLocationClick = { url, colorRGB ->
+                    safeNavigate(navController, NavItem.LocationAreas.createRoute(url, colorRGB))
+                },
+                onBackPressed = { navController.popBackStack() }
+            )
+        }
+        composable(NavItem.LocationAreas) {
+            LocationAreaScreen {
                 navController.popBackStack()
             }
         }

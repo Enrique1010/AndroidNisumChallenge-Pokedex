@@ -4,7 +4,6 @@ import com.erapps.pokedexapp.data.api.models.Pokemon
 import com.erapps.pokedexapp.data.api.models.PokemonListResponse
 import com.erapps.pokedexapp.data.api.models.abilities.AbilityDetails
 import com.erapps.pokedexapp.data.api.models.encounters.PokemonEncounters
-import com.erapps.pokedexapp.data.api.models.encounters.ecountermethod.EncounterMethodDetails
 import com.erapps.pokedexapp.data.api.models.encounters.locationarea.LocationAreaDetails
 import com.erapps.pokedexapp.data.api.models.moves.MoveDetails
 import com.erapps.pokedexapp.data.api.models.species.SpeciesDetails
@@ -43,8 +42,5 @@ interface PokeApiService {
 
     @GET
     suspend fun getLocationAreas(@Url locationAreaUrl: String): NetworkResponse<LocationAreaDetails, *>
-
-    @GET
-    suspend fun getEncounterMethod(@Url encounterMethod: String): NetworkResponse<EncounterMethodDetails, *>
 
 }

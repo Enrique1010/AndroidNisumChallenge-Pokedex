@@ -23,6 +23,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -279,11 +280,14 @@ private fun EffectSection(
         getFilteredEffectEntries(effectEntries)[0]
     }
 
-    Text(
-        text = stringResource(id = R.string.effect_label),
-        fontSize = dimensionResource(id = R.dimen.dimen_24dp).value.sp,
-        fontWeight = FontWeight.Bold
-    )
+    if (effects.effect.isNotEmpty() || effects.short_effect.isNotEmpty()) {
+        Text(
+            text = stringResource(id = R.string.effect_label),
+            fontSize = dimensionResource(id = R.dimen.dimen_24dp).value.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+
     Column(
         modifier = modifier.padding(horizontal = dimensionResource(id = R.dimen.dimen_16dp))
     ) {
@@ -323,7 +327,9 @@ private fun EffectTextSection(
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_4dp)))
     Text(
         text = effects.short_effect,
-        fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp
+        fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp,
+        maxLines = 10,
+        overflow = TextOverflow.Ellipsis
     )
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
 }
@@ -338,7 +344,9 @@ private fun EffectWithChanceTextSection(
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_4dp)))
     Text(
         text = shortEffectWithChance,
-        fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp
+        fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp,
+        maxLines = 10,
+        overflow = TextOverflow.Ellipsis
     )
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
 }

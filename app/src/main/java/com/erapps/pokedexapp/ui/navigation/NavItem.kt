@@ -25,9 +25,9 @@ sealed class NavItem(
     //details navigation
     object AbilityDetails :
         NavItem("abilityDetails", listOf(NavArgs.AbilityUrl, NavArgs.AbilityColorRGB)) {
-        fun createRoute(url: String, colorARG: Int): String {
+        fun createRoute(url: String, colorRGB: Int): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            return "$baseRoute/$encodedUrl/$colorARG"
+            return "$baseRoute/$encodedUrl/$colorRGB"
         }
     }
 
@@ -39,24 +39,27 @@ sealed class NavItem(
         }
     }
 
-    object SpecieDetails : NavItem("specieDetails", listOf(NavArgs.SpecieUrl)) {
-        fun createRoute(url: String): String {
-            val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            return "$baseRoute/$encodedUrl"
-        }
-    }
-
-    object Encounters : NavItem("encounters", listOf(NavArgs.EncountersUrl, NavArgs.EncountersColorRGB)) {
+    object SpecieDetails :
+        NavItem("specieDetails", listOf(NavArgs.SpecieUrl, NavArgs.SpecieColorRGB)) {
         fun createRoute(url: String, colorRGB: Int): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
             return "$baseRoute/$encodedUrl/$colorRGB"
         }
     }
 
-    object LocationAreas : NavItem("locationAreas", listOf(NavArgs.LocationAreasUrl)) {
-        fun createRoute(url: String): String {
+    object Encounters :
+        NavItem("encounters", listOf(NavArgs.EncountersUrl, NavArgs.EncountersColorRGB)) {
+        fun createRoute(url: String, colorRGB: Int): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            return "$baseRoute/$encodedUrl"
+            return "$baseRoute/$encodedUrl/$colorRGB"
+        }
+    }
+
+    object LocationAreas :
+        NavItem("locationAreas", listOf(NavArgs.LocationAreasUrl, NavArgs.LocationsAreaColorRGB)) {
+        fun createRoute(url: String, colorRGB: Int): String {
+            val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
+            return "$baseRoute/$encodedUrl/$colorRGB"
         }
     }
 }
@@ -65,6 +68,7 @@ enum class NavArgs(
     val key: String,
     val navType: NavType<*>
 ) {
+    //details
     PokemonId("pokemonId", NavType.StringType),
 
     //abilities
@@ -77,9 +81,11 @@ enum class NavArgs(
 
     //specie
     SpecieUrl("specieUrl", NavType.StringType),
+    SpecieColorRGB("specieColorRGB", NavType.IntType),
 
     //locations
     EncountersUrl("encountersUrl", NavType.StringType),
     EncountersColorRGB("encountersColorRGB", NavType.IntType),
-    LocationAreasUrl("locationAreasUrl", NavType.StringType),
+    LocationAreasUrl("locationAreaUrl", NavType.StringType),
+    LocationsAreaColorRGB("locationAreaColorRGB", NavType.IntType)
 }

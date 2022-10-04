@@ -16,4 +16,6 @@
     <dimen name="dimen_28dp">28dp</dimen>
     <dimen name="move_type_section_height">25dp</dimen>
     <dimen name="move_type_section_text_size">18dp</dimen>
+    <dimen name="type_section_height">35dp</dimen>
+    <dimen name="type_section_text_size">18dp</dimen>
 </resources>

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.erapps.pokedexapp.R
@@ -115,7 +116,7 @@ private fun AbilityDetailsContent(
     }
 
     Column(
-        modifier = modifier.padding(dimensionResource(id = R.dimen.dimen_8dp)),
+        modifier = modifier.padding(dimensionResource(id = R.dimen.dimen_16dp)),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -223,9 +224,19 @@ private fun EffectSection(
         fontSize = dimensionResource(id = R.dimen.dimen_24dp).value.sp,
         fontWeight = FontWeight.Bold
     )
-    Text(text = effect, fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp)
+    Text(
+        text = effect,
+        fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp,
+        maxLines = 10,
+        overflow = TextOverflow.Ellipsis
+    )
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_4dp)))
-    Text(text = shortEffect, fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp)
+    Text(
+        text = shortEffect,
+        fontSize = dimensionResource(id = R.dimen.dimen_16dp).value.sp,
+        maxLines = 10,
+        overflow = TextOverflow.Ellipsis
+    )
     Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
     Text(
         text = stringResource(id = R.string.feature_list_per_game_label),

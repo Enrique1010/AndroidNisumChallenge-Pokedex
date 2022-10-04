@@ -24,6 +24,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
@@ -37,11 +39,18 @@ import coil.request.ImageRequest
 import com.erapps.pokedexapp.R
 import com.erapps.pokedexapp.data.api.models.Pokemon
 import com.erapps.pokedexapp.data.api.models.pokemon.Ability
+import com.erapps.pokedexapp.data.api.models.pokemon.Species
 import com.erapps.pokedexapp.data.api.models.pokemon.Stat
 import com.erapps.pokedexapp.data.api.models.pokemon.Type
 import com.erapps.pokedexapp.ui.screens.details.moves.MovesScreenSection
 import com.erapps.pokedexapp.ui.screens.getNetworkStatus
 import com.erapps.pokedexapp.ui.shared.*
+import com.erapps.pokedexapp.utils.Constants.ANIMPOKEMONSTATDURATION
+import com.erapps.pokedexapp.utils.Constants.DATASECTIONWEIGHT
+import com.erapps.pokedexapp.utils.Constants.IMAGEMAXWEIGHT
+import com.erapps.pokedexapp.utils.Constants.MAXMOVESTAT
+import com.erapps.pokedexapp.utils.Constants.POKEMONBASEFORCALCULATION1
+import com.erapps.pokedexapp.utils.Constants.POKEMONBASEFORCALCULATION2
 import com.erapps.pokedexapp.utils.abbrStat
 import com.erapps.pokedexapp.utils.getPokemonStatToColor
 import com.erapps.pokedexapp.utils.getPokemonTypeToColor
@@ -55,6 +64,7 @@ fun DetailsScreen(
     viewModel: DetailsScreenViewModel = hiltViewModel(),
     onAbilityClick: (String, Int) -> Unit,
     onEncounterSectionClick: (String, Int) -> Unit,
+    onSpecieSectionClick: (String, Int) -> Unit,
     onMoveClick: (String, Int) -> Unit,
     onBackPressed: () -> Unit
 ) {
@@ -101,13 +111,14 @@ fun DetailsScreen(
                     backGroundColor = viewModel.backGroundColor,
                     onAbilityClick = onAbilityClick,
                     onEncounterSectionClick = onEncounterSectionClick,
+                    onSpecieSectionClick = onSpecieSectionClick,
                     onMoveClick = onMoveClick,
                     scaffoldState = scaffoldState
                 )
             }
             else -> {}
         }
-        if (scaffoldState.bottomSheetState.isCollapsed){
+        if (scaffoldState.bottomSheetState.isCollapsed) {
             BackButtonBar(modifier, onBackPressed)
         }
     }
@@ -122,6 +133,7 @@ private fun DetailsScreenContent(
     pokemon: Pokemon,
     onAbilityClick: (String, Int) -> Unit,
     onEncounterSectionClick: (String, Int) -> Unit,
+    onSpecieSectionClick: (String, Int) -> Unit,
     onMoveClick: (String, Int) -> Unit,
     backGroundColor: MutableState<Color>
 ) {
@@ -137,7 +149,7 @@ private fun DetailsScreenContent(
                 onMoveClick = onMoveClick
             )
         }
-    ){
+    ) {
         Box(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
@@ -172,6 +184,11 @@ private fun DetailsScreenContent(
                     backGroundColor = backGroundColor,
                     onEncounterSectionClick = onEncounterSectionClick
                 )
+                PokemonSpecieSection(
+                    species = pokemon.species,
+                    backGroundColor = backGroundColor,
+                    onSpecieSectionClick = onSpecieSectionClick
+                )
             }
         }
     }
@@ -196,8 +213,8 @@ private fun ImageSection(
         loading = { CircularProgressIndicator() },
         alignment = Alignment.TopCenter,
         modifier = modifier
-            .fillMaxWidth(.7f)
-            .clip(RoundedCornerShape(4.dp)),
+            .fillMaxWidth(IMAGEMAXWEIGHT)
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.dimen_4dp))),
         contentScale = ContentScale.Crop,
         onSuccess = { painter ->
             getImageDominantColor(backGroundColor, painter.result.drawable)
@@ -217,7 +234,7 @@ private fun TitleSection(
         Text(
             text = title,
             fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
+            fontSize = dimensionResource(id = R.dimen.dimen_32dp).value.sp,
             color = MaterialTheme.colors.onBackground,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
@@ -230,22 +247,22 @@ private fun PokemonTypeSection(types: List<Type>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(16.dp)
+            .padding(dimensionResource(id = R.dimen.dimen_16dp))
     ) {
         types.forEach { type ->
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .weight(DATASECTIONWEIGHT)
+                    .padding(horizontal = dimensionResource(id = R.dimen.dimen_8dp))
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.dimen_4dp)))
                     .background(getPokemonTypeToColor(type.type.name))
-                    .height(35.dp)
+                    .height(dimensionResource(id = R.dimen.type_section_height))
             ) {
                 Text(
                     text = type.type.name.capitalize(Locale.current),
                     color = Color.White,
-                    fontSize = 18.sp,
+                    fontSize = dimensionResource(id = R.dimen.type_section_text_size).value.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -260,10 +277,10 @@ private fun PokemonDetailDataSection(
     sectionHeight: Dp = dimensionResource(id = R.dimen.dimen_32dp)
 ) {
     val pokemonWeightInKg = remember {
-        round(pokemonWeight * 100f) / 1000f
+        round(pokemonWeight * POKEMONBASEFORCALCULATION1) / POKEMONBASEFORCALCULATION2
     }
     val pokemonHeightInMeters = remember {
-        round(pokemonHeight * 100f) / 1000f
+        round(pokemonHeight * POKEMONBASEFORCALCULATION1) / POKEMONBASEFORCALCULATION2
     }
     Row(
         modifier = Modifier
@@ -271,20 +288,20 @@ private fun PokemonDetailDataSection(
     ) {
         PokemonDetailDataItem(
             dataValue = pokemonWeightInKg,
-            dataUnit = "kg",
+            dataUnit = stringResource(id = R.string.kg_unit),
             dataIcon = Icons.Default.LineWeight,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(DATASECTIONWEIGHT)
         )
         Spacer(
             modifier = Modifier
-                .size(1.dp, sectionHeight)
+                .size(dimensionResource(id = R.dimen.basic_border), sectionHeight)
                 .background(MaterialTheme.colors.onBackground)
         )
         PokemonDetailDataItem(
             dataValue = pokemonHeightInMeters,
-            dataUnit = "m",
+            dataUnit = stringResource(id = R.string.meter_unit),
             dataIcon = Icons.Default.Height,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(DATASECTIONWEIGHT)
         )
     }
 }
@@ -306,7 +323,7 @@ private fun PokemonDetailDataItem(
             contentDescription = null,
             tint = MaterialTheme.colors.onBackground
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
         Text(
             text = "$dataValue$dataUnit",
             color = MaterialTheme.colors.onBackground
@@ -317,7 +334,7 @@ private fun PokemonDetailDataItem(
 @Composable
 private fun PokemonBaseStats(
     stats: List<Stat>,
-    animDelayPerItem: Int = 100
+    animDelayPerItem: Int = MAXMOVESTAT
 ) {
     val maxBaseStat = remember {
         stats.maxOf { it.base_stat }
@@ -325,7 +342,7 @@ private fun PokemonBaseStats(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
 
         stats.forEachIndexed { i, stat ->
             PokemonStat(
@@ -335,7 +352,7 @@ private fun PokemonBaseStats(
                 statColor = getPokemonStatToColor(stat),
                 animDelay = i * animDelayPerItem
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
         }
     }
 }
@@ -347,7 +364,7 @@ private fun PokemonStat(
     statMaxValue: Int,
     statColor: Color,
     height: Dp = dimensionResource(id = R.dimen.dimen_28dp),
-    animDuration: Int = 500,
+    animDuration: Int = ANIMPOKEMONSTATDURATION,
     animDelay: Int = 0
 ) {
     var animationPlayed by remember {
@@ -411,7 +428,7 @@ fun AbilitiesSection(
         mutableStateOf(false)
     }
 
-    Spacer(modifier = modifier.height(8.dp))
+    Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -419,7 +436,11 @@ fun AbilitiesSection(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = "Abilities", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text(
+            text = stringResource(id = R.string.ability_section_label),
+            fontWeight = FontWeight.Bold,
+            fontSize = dimensionResource(id = R.dimen.font_size_medium).value.sp
+        )
         Icon(
             modifier = modifier.clickable { expandAbilitiesSection = !expandAbilitiesSection },
             imageVector = if (!expandAbilitiesSection) Icons.Default.ArrowDropDown else Icons.Default.ArrowDropUp,
@@ -450,7 +471,7 @@ private fun AbilityItem(
             Row(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(dimensionResource(id = R.dimen.dimen_8dp))
                     .clickable {
                         if (!status) {
                             Toast
@@ -473,7 +494,7 @@ private fun AbilityItem(
                         tint = backGroundColor.value,
                         contentDescription = null
                     )
-                    Spacer(modifier = modifier.width(8.dp))
+                    Spacer(modifier = modifier.width(dimensionResource(id = R.dimen.dimen_8dp)))
                     Text(text = ability.ability.name.makeGoodTitle())
                 }
                 Icon(imageVector = Icons.Outlined.NavigateNext, contentDescription = null)
@@ -492,15 +513,31 @@ private fun EncountersSection(
     val context = LocalContext.current
     val status = getNetworkStatus()
 
-    Spacer(modifier = modifier.height(8.dp))
+    Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onEncounterSectionClick(encountersUrl, backGroundColor.value.toArgb()) },
+            .clickable {
+                if (!status) {
+                    Toast
+                        .makeText(
+                            context,
+                            R.string.cant_see_details_without_internet_text,
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                    return@clickable
+                }
+                onEncounterSectionClick(encountersUrl, backGroundColor.value.toArgb())
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = "Encounters", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text(
+            text = stringResource(id = R.string.encounters_row_text),
+            fontWeight = FontWeight.Bold,
+            fontSize = dimensionResource(id = R.dimen.font_size_medium).value.sp
+        )
         Icon(
             modifier = modifier.clickable {
                 if (!status) {
@@ -514,6 +551,64 @@ private fun EncountersSection(
                     return@clickable
                 }
                 onEncounterSectionClick(encountersUrl, backGroundColor.value.toArgb())
+            },
+            imageVector = Icons.Default.NavigateNext,
+            contentDescription = null
+        )
+    }
+}
+
+@Composable
+private fun PokemonSpecieSection(
+    modifier: Modifier = Modifier,
+    species: Species,
+    backGroundColor: MutableState<Color>,
+    onSpecieSectionClick: (String, Int) -> Unit,
+) {
+    val context = LocalContext.current
+    val status = getNetworkStatus()
+
+    Spacer(modifier = modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                if (!status) {
+                    Toast
+                        .makeText(
+                            context,
+                            R.string.cant_see_details_without_internet_text,
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                    return@clickable
+                }
+                onSpecieSectionClick(species.url, backGroundColor.value.toArgb())
+            },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                append(stringResource(id = R.string.specie_row_text))
+                append(" ${species.name.makeGoodTitle()}")
+            },
+            fontWeight = FontWeight.Bold,
+            fontSize = dimensionResource(id = R.dimen.font_size_medium).value.sp
+        )
+        Icon(
+            modifier = modifier.clickable {
+                if (!status) {
+                    Toast
+                        .makeText(
+                            context,
+                            R.string.cant_see_details_without_internet_text,
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                    return@clickable
+                }
+                onSpecieSectionClick(species.url, backGroundColor.value.toArgb())
             },
             imageVector = Icons.Default.NavigateNext,
             contentDescription = null

@@ -1,4 +1,4 @@
-package com.erapps.pokedexapp.ui.screens.details.encounters
+package com.erapps.pokedexapp.ui.screens.details.encounters.locationarea
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel
-class EncountersViewModel @Inject constructor(
+class LocationAreaViewModel @Inject constructor(
     private val repository: PokemonDetailsRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
@@ -27,22 +27,18 @@ class EncountersViewModel @Inject constructor(
     val backGroundColor = mutableStateOf(Color.Transparent)
 
     init {
-        savedStateHandle.get<String>("encountersUrl")?.let { url ->
+        savedStateHandle.get<String>("locationAreaUrl")?.let { url ->
             val decodeUrl = URLDecoder.decode(url, StandardCharsets.UTF_8.toString())
-            getEncounters(decodeUrl)
+            getLocationAreaDetails(decodeUrl)
         }
-        savedStateHandle.get<String>("encountersColorRGB")?.let {
-            backGroundColor.value = Color(it.toInt())
+        savedStateHandle.get<Int>("locationAreaColorRGB")?.let {
+            backGroundColor.value = Color(it)
         }
     }
 
-    private fun getEncounters(url: String) = viewModelScope.launch {
-        repository.getEncounters(url).collect { result ->
+    private fun getLocationAreaDetails(url: String) = viewModelScope.launch {
+        repository.getLocationAreas(url).collect { result ->
             mapResultToUiState(result, _uiState) { response ->
-                if (response.isEmpty()) {
-                    _uiState.value = UiState.Empty
-                    return@mapResultToUiState
-                }
 
                 _uiState.value = UiState.Success(response)
             }

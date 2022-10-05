@@ -77,6 +77,7 @@ fun PokemonListScreen(
                     }
                 },
                 onBack = {
+                    text.value = ""
                     viewModel.filterPokemonsByName("")
                 }
             )

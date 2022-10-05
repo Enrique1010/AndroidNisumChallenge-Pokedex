@@ -3,7 +3,6 @@ package com.erapps.pokedexapp.ui.screens.pokemonlist
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -29,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
@@ -37,7 +37,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
@@ -46,6 +45,10 @@ import com.erapps.pokedexapp.R
 import com.erapps.pokedexapp.data.api.models.ShortPokemon
 import com.erapps.pokedexapp.ui.screens.getNetworkStatus
 import com.erapps.pokedexapp.ui.shared.*
+import com.erapps.pokedexapp.utils.TestTags.LISTOFPOKEMONS
+import com.erapps.pokedexapp.utils.TestTags.SEARCHBARICONBUTTON
+import com.erapps.pokedexapp.utils.TestTags.SEARCHBARTEXTFIELD
+import com.erapps.pokedexapp.utils.TestTags.TRAILINGICONBUTTON
 import com.erapps.pokedexapp.utils.getIdFromUrl
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -55,11 +58,10 @@ fun PokemonListScreen(
     onPokemonClick: (String) -> Unit
 ) {
 
-    //needed variables
     val uiState = viewModel.uiState.value
     val isEmptyList = viewModel.isEmptyList.value
-    val text = remember { mutableStateOf("") }
-    val focused = remember { mutableStateOf(false) }
+    val text = remember { viewModel.text }
+    val focused = remember { viewModel.focused }
     val status = getNetworkStatus()
     val context = LocalContext.current
     val scrollState = rememberLazyGridState()
@@ -68,16 +70,15 @@ fun PokemonListScreen(
         topBar = {
             SearchBar(
                 query = text,
+                focused = focused,
                 onSearchClick = {
                     if (text.value.isNotEmpty()) {
                         viewModel.filterPokemonsByName(text.value)
                     }
                 },
                 onBack = {
-                    text.value = ""
                     viewModel.filterPokemonsByName("")
-                },
-                focused = focused
+                }
             )
         }
     ) {
@@ -85,7 +86,7 @@ fun PokemonListScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp),
+                .padding(dimensionResource(id = R.dimen.dimen_8dp)),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -161,14 +162,16 @@ fun SearchBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(dimensionResource(id = R.dimen.dimen_8dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         AnimatedVisibility(visible = focused.value) {
             // Back button
             IconButton(
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.dimen_4dp)),
+                modifier = Modifier
+                    .padding(dimensionResource(id = R.dimen.dimen_4dp))
+                    .testTag(SEARCHBARICONBUTTON),
                 onClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
@@ -202,7 +205,8 @@ fun CustomTextField(
         modifier = modifier
             .fillMaxWidth()
             .onFocusChanged { focused.value = it.isFocused }
-            .focusRequester(focusRequester),
+            .focusRequester(focusRequester)
+            .testTag(SEARCHBARTEXTFIELD),
         value = value.value,
         onValueChange = { value.value = it },
         placeholder = {
@@ -214,7 +218,10 @@ fun CustomTextField(
         singleLine = true,
         trailingIcon = {
             if (focused.value) {
-                IconButton(onClick = onSearchClick) {
+                IconButton(
+                    modifier = modifier.testTag(TRAILINGICONBUTTON),
+                    onClick = onSearchClick
+                ) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         tint = MaterialTheme.colors.primary,
@@ -223,7 +230,7 @@ fun CustomTextField(
                 }
             }
         },
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_shape_basic)),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions { onSearchClick() },
         colors = TextFieldDefaults.textFieldColors(
@@ -239,12 +246,14 @@ fun CustomTextField(
 
 @Composable
 fun ListOfPokemons(
+    modifier: Modifier = Modifier,
     list: List<ShortPokemon>,
     onCardClick: (String) -> Unit,
     scrollState: LazyGridState
 ) {
 
     LazyVerticalGrid(
+        modifier = modifier.testTag(LISTOFPOKEMONS),
         columns = GridCells.Fixed(2),
         state = scrollState
     ) {
@@ -276,17 +285,8 @@ fun ListOfPokemonsItem(
                     )
                 )
             ),
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.dimen_4dp)),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_shape_basic)),
         elevation = dimensionResource(id = R.dimen.card_elevation),
-        border = BorderStroke(
-            dimensionResource(id = R.dimen.card_border_stroke),
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    MaterialTheme.colors.surface,
-                    MaterialTheme.colors.surface.copy(alpha = 1f)
-                )
-            )
-        ),
         onClick = onCardClick
     ) {
         Column(

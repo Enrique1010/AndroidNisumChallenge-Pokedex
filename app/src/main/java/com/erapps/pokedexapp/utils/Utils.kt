@@ -3,7 +3,6 @@ package com.erapps.pokedexapp.utils
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
-import com.erapps.pokedexapp.data.api.models.pokemon.Stat
 import com.erapps.pokedexapp.ui.theme.*
 
 fun String.makeGoodTitle(): String {
@@ -57,8 +56,8 @@ fun getMoveStatColor(stat: String): Color {
     }
 }
 
-fun getPokemonStatToColor(stat: Stat): Color {
-    return when(stat.stat.name.lowercase()) {
+fun getPokemonStatToColor(stat: String): Color {
+    return when(stat.lowercase()) {
         "hp" -> HPColor
         "attack" -> AtkColor
         "defense" -> DefColor
@@ -69,8 +68,8 @@ fun getPokemonStatToColor(stat: Stat): Color {
     }
 }
 
-fun abbrStat(stat: Stat): String {
-    return when(stat.stat.name.lowercase()) {
+fun abbrStat(stat: String): String {
+    return when(stat.lowercase()) {
         "hp" -> "HP"
         "attack" -> "Atk"
         "defense" -> "Def"

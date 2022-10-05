@@ -22,6 +22,9 @@ class PokemonSearchViewModel @Inject constructor(
     private val _isEmptyList = mutableStateOf(false)
     val isEmptyList: State<Boolean> = _isEmptyList
 
+    val text = mutableStateOf("")
+    val focused = mutableStateOf(false)
+
     init {
         filterPokemonsByName("")
     }

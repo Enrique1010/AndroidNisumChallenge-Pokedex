@@ -173,11 +173,13 @@ private fun DetailsScreenContent(
                 )
                 PokemonBaseStats(stats = pokemon.stats)
                 AbilitiesSection(
+                    modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.dimen_4dp)),
                     abilities = pokemon.abilities,
                     onAbilityClick = onAbilityClick,
                     backGroundColor = backGroundColor
                 )
                 EncountersSection(
+                    modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.dimen_8dp)),
                     encountersUrl = pokemon.location_area_encounters,
                     backGroundColor = backGroundColor,
                     onEncounterSectionClick = onEncounterSectionClick
@@ -344,10 +346,10 @@ private fun PokemonBaseStats(
 
         stats.forEachIndexed { i, stat ->
             PokemonStat(
-                statName = abbrStat(stat),
+                statName = abbrStat(stat.stat.name),
                 statValue = stat.base_stat,
                 statMaxValue = maxBaseStat,
-                statColor = getPokemonStatToColor(stat),
+                statColor = getPokemonStatToColor(stat.stat.name),
                 animDelay = i * animDelayPerItem
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.dimen_8dp)))

@@ -55,6 +55,7 @@ App to Consume [PokeApi](https://pokeapi.co/) and make searches by name. made wi
 - Testing List Screen - tested if screen is displayed when list is not empty.
 - Testing Utils method - tested methods to format strings and get specific string values.
 - Testing Utils methods to get colors - tested all methods to get colors by query.
+- Testing connectivity status - tested if connectivity status function is working.
 
 # Used Devices for testing
 

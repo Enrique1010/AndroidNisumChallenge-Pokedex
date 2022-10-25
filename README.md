@@ -1,4 +1,4 @@
-# AndroidNisumChallenge-Pokedex
+# Pokedex
 App to Consume [PokeApi](https://pokeapi.co/) and make searches by name. made with Jetpack Compose.
 
 # Application ScreenShots
